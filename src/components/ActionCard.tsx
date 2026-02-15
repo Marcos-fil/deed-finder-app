@@ -23,7 +23,7 @@ const ActionCard = ({ title, description, date, volunteers, image, category }: A
         <img
           src={image}
           alt={title}
-          className="h-full w-full transition-transform duration-500 group-hover:scale-105 object-fill border-4" />
+          className="h-full w-full transition-transform duration-500 group-hover:scale-105 border-4 object-cover" />
 
         <div className="absolute top-3 left-3">
           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${categoryColors[category] || "bg-muted text-muted-foreground"}`}>
