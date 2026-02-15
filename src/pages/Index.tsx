@@ -1,6 +1,7 @@
 import { Heart, TrendingUp, Users } from "lucide-react";
 import ActionCard from "@/components/ActionCard";
 import heroBanner from "@/assets/hero-banner.png";
+import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 
 const stats = [
   { label: "Famílias ajudadas", value: "1.240", icon: Heart },
@@ -14,7 +15,7 @@ const actions = [
     description: "Distribuição de cobertores e roupas de inverno para comunidades carentes da zona sul.",
     date: "15 Fev",
     volunteers: 45,
-    image: heroBanner,
+    image: campanhaAgasalho,
     category: "Alimentação",
   },
   {
