@@ -1,6 +1,6 @@
 import { Heart, TrendingUp, Users } from "lucide-react";
 import ActionCard from "@/components/ActionCard";
-import heroBanner from "@/assets/hero-banner.jpg";
+import heroBanner from "@/assets/hero-banner.png";
 
 const stats = [
   { label: "Famílias ajudadas", value: "1.240", icon: Heart },
