@@ -13,7 +13,7 @@ const categoryColors: Record<string, string> = {
   "Alimentação": "bg-accent text-accent-foreground",
   "Educação": "bg-primary text-primary-foreground",
   "Meio Ambiente": "bg-secondary text-secondary-foreground",
-  "Saúde": "bg-destructive text-destructive-foreground",
+  "Saúde": "bg-destructive text-destructive-foreground"
 };
 
 const ActionCard = ({ title, description, date, volunteers, image, category }: ActionCardProps) => {
@@ -23,8 +23,8 @@ const ActionCard = ({ title, description, date, volunteers, image, category }: A
         <img
           src={image}
           alt={title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+          className="h-full w-full transition-transform duration-500 group-hover:scale-105 object-fill border-4" />
+
         <div className="absolute top-3 left-3">
           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${categoryColors[category] || "bg-muted text-muted-foreground"}`}>
             {category}
@@ -45,8 +45,8 @@ const ActionCard = ({ title, description, date, volunteers, image, category }: A
           </span>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ActionCard;
