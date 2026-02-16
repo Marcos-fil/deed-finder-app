@@ -9,6 +9,7 @@ import Donations from "./pages/Donations";
 import Map from "./pages/Map";
 import Profile from "./pages/Profile";
 import ActionDetail from "./pages/ActionDetail";
+import Participate from "./pages/Participate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/acao/:slug" element={<ActionDetail />} />
+          <Route path="/acao/:slug/participar" element={<Participate />} />
           <Route path="/doacoes" element={<Donations />} />
           <Route path="/mapa" element={<Map />} />
           <Route path="/perfil" element={<Profile />} />
