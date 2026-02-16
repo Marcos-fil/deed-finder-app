@@ -1,4 +1,5 @@
 import { Calendar, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ActionCardProps {
   title: string;
@@ -7,6 +8,7 @@ interface ActionCardProps {
   volunteers: number;
   image: string;
   category: string;
+  slug: string;
 }
 
 const categoryColors: Record<string, string> = {
@@ -16,15 +18,19 @@ const categoryColors: Record<string, string> = {
   "Saúde": "bg-destructive text-destructive-foreground"
 };
 
-const ActionCard = ({ title, description, date, volunteers, image, category }: ActionCardProps) => {
+const ActionCard = ({ title, description, date, volunteers, image, category, slug }: ActionCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="group overflow-hidden rounded-xl bg-card shadow-sm border border-border transition-all hover:shadow-md animate-fade-in-up">
+    <div
+      onClick={() => navigate(`/acao/${slug}`)}
+      className="group overflow-hidden rounded-xl bg-card shadow-sm border border-border transition-all hover:shadow-md animate-fade-in-up cursor-pointer"
+    >
       <div className="relative h-40 overflow-hidden">
         <img
           src={image}
           alt={title}
           className="h-full w-full transition-transform duration-500 group-hover:scale-105 border-4 object-cover" />
-
         <div className="absolute top-3 left-3">
           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${categoryColors[category] || "bg-muted text-muted-foreground"}`}>
             {category}
@@ -45,8 +51,8 @@ const ActionCard = ({ title, description, date, volunteers, image, category }: A
           </span>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 };
 
 export default ActionCard;

@@ -17,6 +17,7 @@ const actions = [
     volunteers: 45,
     image: campanhaAgasalho,
     category: "Alimentação",
+    slug: "campanha-do-agasalho",
   },
   {
     title: "Reforço Escolar Comunitário",
@@ -25,6 +26,7 @@ const actions = [
     volunteers: 20,
     image: heroBanner,
     category: "Educação",
+    slug: "reforco-escolar-comunitario",
   },
   {
     title: "Mutirão de Limpeza do Rio",
@@ -33,6 +35,7 @@ const actions = [
     volunteers: 60,
     image: heroBanner,
     category: "Meio Ambiente",
+    slug: "mutirao-de-limpeza-do-rio",
   },
   {
     title: "Atendimento Médico Solidário",
@@ -41,6 +44,7 @@ const actions = [
     volunteers: 15,
     image: heroBanner,
     category: "Saúde",
+    slug: "atendimento-medico-solidario",
   },
 ];
 
