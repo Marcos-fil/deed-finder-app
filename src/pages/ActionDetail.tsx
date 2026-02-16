@@ -146,7 +146,7 @@ const ActionDetail = () => {
         </div>
 
         {/* CTA */}
-        <Button className="w-full" size="lg">
+        <Button className="w-full" size="lg" onClick={() => navigate(`/acao/${slug}/participar`)}>
           Quero participar
         </Button>
       </div>
