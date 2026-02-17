@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 import Index from "./pages/Index";
 import Donations from "./pages/Donations";
@@ -10,9 +11,39 @@ import Map from "./pages/Map";
 import Profile from "./pages/Profile";
 import ActionDetail from "./pages/ActionDetail";
 import Participate from "./pages/Participate";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><p className="text-muted-foreground">Carregando...</p></div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
+const AppRoutes = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><p className="text-muted-foreground">Carregando...</p></div>;
+
+  return (
+    <>
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Auth />} />
+        <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+        <Route path="/acao/:slug" element={<ProtectedRoute><ActionDetail /></ProtectedRoute>} />
+        <Route path="/acao/:slug/participar" element={<ProtectedRoute><Participate /></ProtectedRoute>} />
+        <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
+        <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
+        <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {user && <BottomNav />}
+    </>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -20,16 +51,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/acao/:slug" element={<ActionDetail />} />
-          <Route path="/acao/:slug/participar" element={<Participate />} />
-          <Route path="/doacoes" element={<Donations />} />
-          <Route path="/mapa" element={<Map />} />
-          <Route path="/perfil" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <BottomNav />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
