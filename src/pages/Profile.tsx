@@ -1,14 +1,54 @@
-import { Heart, Award, Calendar, Settings, LogOut, ChevronRight, Bell, HelpCircle } from "lucide-react";
+import { useState, useRef } from "react";
+import { Heart, Award, Calendar, Settings, LogOut, ChevronRight, Bell, HelpCircle, Camera } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.user_metadata?.avatar_url || null);
+  const [uploading, setUploading] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/login");
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const url = `${publicUrl}?t=${Date.now()}`;
+
+      await supabase.auth.updateUser({ data: { avatar_url: url } });
+      await supabase.from("profiles").update({ avatar_url: url }).eq("user_id", user.id);
+
+      setAvatarUrl(url);
+      toast({ title: "Foto atualizada!", description: "Sua foto de perfil foi salva." });
+    } catch (error: any) {
+      toast({ title: "Erro ao enviar foto", description: error.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const displayName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Usuário";
@@ -16,12 +56,31 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleAvatarUpload}
+      />
+
       {/* Header */}
       <div className="gradient-primary px-5 pt-12 pb-10">
         <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-primary-foreground/20 flex items-center justify-center text-2xl font-display font-bold text-primary-foreground border-2 border-primary-foreground/30">
-            {initials}
-          </div>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="relative h-16 w-16 rounded-full bg-primary-foreground/20 flex items-center justify-center text-2xl font-display font-bold text-primary-foreground border-2 border-primary-foreground/30 overflow-hidden group"
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+            ) : (
+              initials
+            )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera className="h-5 w-5 text-white" />
+            </div>
+          </button>
           <div>
             <h1 className="font-display text-xl font-bold text-primary-foreground">{displayName}</h1>
             <p className="text-primary-foreground/70 text-sm">{user?.email}</p>
