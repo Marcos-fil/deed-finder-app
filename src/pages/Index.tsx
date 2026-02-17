@@ -4,49 +4,49 @@ import heroBanner from "@/assets/hero-banner.png";
 import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 
 const stats = [
-  { label: "Famílias ajudadas", value: "1.240", icon: Heart },
-  { label: "Voluntários ativos", value: "328", icon: Users },
-  { label: "Ações este mês", value: "12", icon: TrendingUp },
-];
+{ label: "Famílias ajudadas", value: "1.240", icon: Heart },
+{ label: "Voluntários ativos", value: "328", icon: Users },
+{ label: "Ações este mês", value: "12", icon: TrendingUp }];
+
 
 const actions = [
-  {
-    title: "Campanha do Agasalho 2026",
-    description: "Distribuição de cobertores e roupas de inverno para comunidades carentes da zona sul.",
-    date: "15 Fev",
-    volunteers: 45,
-    image: campanhaAgasalho,
-    category: "Alimentação",
-    slug: "campanha-do-agasalho",
-  },
-  {
-    title: "Reforço Escolar Comunitário",
-    description: "Aulas de reforço gratuitas para crianças do ensino fundamental nas escolas públicas.",
-    date: "20 Fev",
-    volunteers: 20,
-    image: heroBanner,
-    category: "Educação",
-    slug: "reforco-escolar-comunitario",
-  },
-  {
-    title: "Mutirão de Limpeza do Rio",
-    description: "Limpeza e revitalização das margens do rio com plantio de mudas nativas.",
-    date: "22 Fev",
-    volunteers: 60,
-    image: heroBanner,
-    category: "Meio Ambiente",
-    slug: "mutirao-de-limpeza-do-rio",
-  },
-  {
-    title: "Atendimento Médico Solidário",
-    description: "Consultas médicas gratuitas para comunidades sem acesso ao posto de saúde.",
-    date: "28 Fev",
-    volunteers: 15,
-    image: heroBanner,
-    category: "Saúde",
-    slug: "atendimento-medico-solidario",
-  },
-];
+{
+  title: "Campanha do Agasalho 2026",
+  description: "Distribuição de cobertores e roupas de inverno para comunidades carentes da zona sul.",
+  date: "15 Fev",
+  volunteers: 45,
+  image: campanhaAgasalho,
+  category: "Alimentação",
+  slug: "campanha-do-agasalho"
+},
+{
+  title: "Reforço Escolar Comunitário",
+  description: "Aulas de reforço gratuitas para crianças do ensino fundamental nas escolas públicas.",
+  date: "20 Fev",
+  volunteers: 20,
+  image: heroBanner,
+  category: "Educação",
+  slug: "reforco-escolar-comunitario"
+},
+{
+  title: "Mutirão de Limpeza do Rio",
+  description: "Limpeza e revitalização das margens do rio com plantio de mudas nativas.",
+  date: "22 Fev",
+  volunteers: 60,
+  image: heroBanner,
+  category: "Meio Ambiente",
+  slug: "mutirao-de-limpeza-do-rio"
+},
+{
+  title: "Atendimento Médico Solidário",
+  description: "Consultas médicas gratuitas para comunidades sem acesso ao posto de saúde.",
+  date: "28 Fev",
+  volunteers: 15,
+  image: heroBanner,
+  category: "Saúde",
+  slug: "atendimento-medico-solidario"
+}];
+
 
 const Index = () => {
   return (
@@ -66,27 +66,27 @@ const Index = () => {
       <div className="px-4 -mt-5 relative z-10">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2 mb-6">
-          {stats.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="bg-card rounded-xl p-3 text-center shadow-sm border border-border animate-scale-in">
+          {stats.map(({ label, value, icon: Icon }) =>
+          <div key={label} className="bg-card rounded-xl p-3 text-center shadow-sm border border-border animate-scale-in">
               <Icon className="h-4 w-4 text-primary mx-auto mb-1" />
               <p className="font-display text-lg font-bold text-foreground">{value}</p>
               <p className="text-[0.6rem] text-muted-foreground leading-tight">{label}</p>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Documentário */}
         <div className="mb-6">
-          <h2 className="font-display text-xl font-semibold text-foreground mb-3">Nosso Documentário</h2>
+          <h2 className="font-display text-xl font-semibold text-foreground mb-3">MISSÃO VIDA!
+          </h2>
           <div className="bg-card rounded-xl overflow-hidden shadow-sm border border-border">
             <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/szI05tMKKVk"
-                title="Documentário Institucional"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <iframe className="absolute inset-0 w-full h-full"
+              src="https://www.youtube.com/embed/szI05tMKKVk"
+              title="Documentário Institucional"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen />
+
             </div>
             <div className="p-3">
               <p className="text-sm text-muted-foreground">Conheça a história e o impacto do nosso trabalho nas comunidades.</p>
@@ -100,13 +100,13 @@ const Index = () => {
           <span className="text-xs text-primary font-medium">Ver todas</span>
         </div>
         <div className="space-y-4">
-          {actions.map((action) => (
-            <ActionCard key={action.title} {...action} />
-          ))}
+          {actions.map((action) =>
+          <ActionCard key={action.title} {...action} />
+          )}
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
