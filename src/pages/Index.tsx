@@ -75,6 +75,25 @@ const Index = () => {
           ))}
         </div>
 
+        {/* Documentário */}
+        <div className="mb-6">
+          <h2 className="font-display text-xl font-semibold text-foreground mb-3">Nosso Documentário</h2>
+          <div className="bg-card rounded-xl overflow-hidden shadow-sm border border-border">
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/szI05tMKKVk"
+                title="Documentário Institucional"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <div className="p-3">
+              <p className="text-sm text-muted-foreground">Conheça a história e o impacto do nosso trabalho nas comunidades.</p>
+            </div>
+          </div>
+        </div>
+
         {/* Actions */}
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-xl font-semibold text-foreground">Ações do Mês</h2>
