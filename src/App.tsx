@@ -13,6 +13,8 @@ import ActionDetail from "./pages/ActionDetail";
 import Participate from "./pages/Participate";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Settings from "./pages/Settings";
+import Help from "./pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const AppRoutes = () => {
         <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/configuracoes" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/ajuda" element={<ProtectedRoute><Help /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {user && <BottomNav />}
