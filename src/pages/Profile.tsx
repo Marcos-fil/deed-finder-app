@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Heart, Award, Calendar, Settings, LogOut, ChevronRight, Bell, HelpCircle, Camera } from "lucide-react";
+import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,8 +125,8 @@ const Profile = () => {
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
             { icon: Bell, label: "Notificações", action: () => {} },
-            { icon: Settings, label: "Configurações", action: () => {} },
-            { icon: HelpCircle, label: "Ajuda e Suporte", action: () => {} },
+            { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
+            { icon: HelpCircle, label: "Ajuda e Suporte", action: () => navigate("/ajuda") },
             { icon: LogOut, label: "Sair", danger: true, action: handleSignOut },
           ].map(({ icon: Icon, label, danger, action }, i, arr) => (
             <button
