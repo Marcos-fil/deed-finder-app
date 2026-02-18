@@ -1,19 +1,18 @@
 import { Check } from "lucide-react";
-import { useState } from "react";
 
 interface DonationCardProps {
   amount: number;
   description: string;
   impact: string;
   popular?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
-const DonationCard = ({ amount, description, impact, popular }: DonationCardProps) => {
-  const [selected, setSelected] = useState(false);
-
+const DonationCard = ({ amount, description, impact, popular, selected = false, onSelect }: DonationCardProps) => {
   return (
     <button
-      onClick={() => setSelected(!selected)}
+      onClick={onSelect}
       className={`relative w-full text-left p-5 rounded-xl border-2 transition-all duration-200 ${
         selected
           ? "border-primary bg-primary/5 shadow-md"
