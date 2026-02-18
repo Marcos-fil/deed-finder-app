@@ -81,7 +81,7 @@ const Help = () => {
           </div>
           <div>
             <h3 className="font-semibold text-sm text-foreground">Endereço</h3>
-            <p className="text-sm text-muted-foreground">Carapicuíba, SP</p>
+            <p className="text-sm text-muted-foreground">R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP, 06396-190</p>
           </div>
         </div>
       </div>
