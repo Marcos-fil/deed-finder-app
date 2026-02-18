@@ -1,106 +1,124 @@
-import { MapPin, Navigation, Clock, Phone } from "lucide-react";
+import { MapPin, Navigation, Clock, Phone, ExternalLink } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
-const donationPoints = [
-  {
-    id: 1,
-    name: "Centro Comunitário Esperança",
-    address: "Rua das Flores, 123 - Centro",
-    hours: "08:00 - 17:00",
-    phone: "(11) 3456-7890",
-    distance: "1.2 km",
-    accepts: ["Roupas", "Alimentos", "Brinquedos"],
-  },
-  {
-    id: 2,
-    name: "Igreja São Francisco",
-    address: "Av. Brasil, 456 - Jardim América",
-    hours: "09:00 - 18:00",
-    phone: "(11) 2345-6789",
-    distance: "2.8 km",
-    accepts: ["Alimentos", "Cobertores"],
-  },
-  {
-    id: 3,
-    name: "Escola Municipal Futuro",
-    address: "Rua da Paz, 789 - Vila Nova",
-    hours: "07:00 - 16:00",
-    phone: "(11) 9876-5432",
-    distance: "3.5 km",
-    accepts: ["Material Escolar", "Livros"],
-  },
-  {
-    id: 4,
-    name: "ONG Mãos Solidárias",
-    address: "Rua Solidariedade, 321 - Bela Vista",
-    hours: "10:00 - 19:00",
-    phone: "(11) 1234-5678",
-    distance: "4.1 km",
-    accepts: ["Roupas", "Calçados", "Higiene"],
-  },
-];
+const ONG_LOCATION = {
+  name: "Missão Vida",
+  address: "R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP, 06396-190",
+  hours: "Seg a Sex, 09:00 - 17:00",
+  phone: "+55 11 94128-9195",
+  lat: -23.5245,
+  lng: -46.8355,
+  accepts: ["Roupas", "Alimentos", "Cobertores", "Calçados", "Higiene"],
+  googleMapsUrl: "https://maps.app.goo.gl/Cm6VyPve2Jy6w6ym9",
+};
 
 const MapPlaceholder = () => {
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const requestLocation = () => {
+    setLoadingLocation(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLoadingLocation(false);
+      },
+      (err) => {
+        setLocationError("Não foi possível obter sua localização.");
+        setLoadingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  useEffect(() => {
+    requestLocation();
+  }, []);
+
+  const getDirectionsUrl = () => {
+    const destination = `${ONG_LOCATION.lat},${ONG_LOCATION.lng}`;
+    if (userLocation) {
+      return `https://www.google.com/maps/dir/${userLocation.lat},${userLocation.lng}/${destination}`;
+    }
+    return `https://www.google.com/maps/dir//${destination}`;
+  };
+
+  const getEmbedUrl = () => {
+    if (userLocation) {
+      return `https://www.google.com/maps/embed/v1/directions?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&origin=${userLocation.lat},${userLocation.lng}&destination=${ONG_LOCATION.lat},${ONG_LOCATION.lng}&mode=driving`;
+    }
+    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${ONG_LOCATION.lat},${ONG_LOCATION.lng}&zoom=15`;
+  };
+
   return (
     <div className="space-y-4">
-      {/* Map visual */}
-      <div className="relative h-52 rounded-xl overflow-hidden bg-muted border border-border">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="h-16 w-16 rounded-full gradient-primary mx-auto flex items-center justify-center mb-3">
-              <Navigation className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <p className="text-sm font-medium text-foreground">Mapa Interativo</p>
-            <p className="text-xs text-muted-foreground mt-1">Encontre pontos de doação perto de você</p>
-          </div>
-        </div>
-        {/* Decorative dots */}
-        {[
-          "top-8 left-12", "top-16 right-20", "bottom-12 left-1/3",
-          "top-1/3 right-1/4", "bottom-8 right-12"
-        ].map((pos, i) => (
-          <div key={i} className={`absolute ${pos}`}>
-            <MapPin className="h-5 w-5 text-primary drop-shadow-md" />
-          </div>
-        ))}
+      {/* Map embed */}
+      <div className="relative rounded-xl overflow-hidden border border-border" style={{ height: "300px" }}>
+        <iframe
+          src={getEmbedUrl()}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Mapa - Missão Vida"
+        />
       </div>
 
-      {/* Points list */}
-      <div className="space-y-3">
-        {donationPoints.map((point, i) => (
-          <div
-            key={point.id}
-            className="bg-card rounded-xl p-4 border border-border animate-fade-in-up"
-            style={{ animationDelay: `${i * 100}ms` }}
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-start gap-3">
-                <div className="h-9 w-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <MapPin className="h-4 w-4 text-primary-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm text-foreground">{point.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">{point.address}</p>
-                </div>
-              </div>
-              <span className="text-xs font-medium text-primary whitespace-nowrap">{point.distance}</span>
-            </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground ml-12">
-              <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" /> {point.hours}
-              </span>
-              <span className="flex items-center gap-1">
-                <Phone className="h-3 w-3" /> {point.phone}
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-1.5 mt-2.5 ml-12">
-              {point.accepts.map((item) => (
-                <span key={item} className="text-[0.65rem] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-medium">
-                  {item}
-                </span>
-              ))}
-            </div>
+      {/* Location status */}
+      {loadingLocation && (
+        <div className="bg-card rounded-xl p-3 border border-border text-center">
+          <p className="text-sm text-muted-foreground animate-pulse">📍 Obtendo sua localização...</p>
+        </div>
+      )}
+      {locationError && (
+        <div className="bg-card rounded-xl p-3 border border-border text-center">
+          <p className="text-sm text-destructive">{locationError}</p>
+          <button onClick={requestLocation} className="text-xs text-primary font-medium mt-1 underline">
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
+      {/* Directions button */}
+      <Button className="w-full h-12" size="lg" asChild>
+        <a href={getDirectionsUrl()} target="_blank" rel="noopener noreferrer">
+          <Navigation className="h-5 w-5 mr-2" />
+          Abrir rota no Google Maps
+          <ExternalLink className="h-4 w-4 ml-2" />
+        </a>
+      </Button>
+
+      {/* ONG Card */}
+      <div className="bg-card rounded-xl p-4 border border-border animate-fade-in-up">
+        <div className="flex items-start gap-3 mb-2">
+          <div className="h-9 w-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+            <MapPin className="h-4 w-4 text-primary-foreground" />
           </div>
-        ))}
+          <div>
+            <h3 className="font-semibold text-sm text-foreground">{ONG_LOCATION.name}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{ONG_LOCATION.address}</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5 text-xs text-muted-foreground ml-12">
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3" /> {ONG_LOCATION.hours}
+          </span>
+          <a href={`tel:${ONG_LOCATION.phone}`} className="flex items-center gap-1 text-primary">
+            <Phone className="h-3 w-3" /> {ONG_LOCATION.phone}
+          </a>
+        </div>
+        <div className="flex flex-wrap gap-1.5 mt-2.5 ml-12">
+          {ONG_LOCATION.accepts.map((item) => (
+            <span key={item} className="text-[0.65rem] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full font-medium">
+              {item}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
