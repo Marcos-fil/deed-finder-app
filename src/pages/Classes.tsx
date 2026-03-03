@@ -62,7 +62,7 @@ const Classes = () => {
   const unenrollMutation = useMutation({
     mutationFn: async (classId: string) => {
       const { error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .delete()
         .eq("class_id", classId)
         .eq("user_id", user!.id);
