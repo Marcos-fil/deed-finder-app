@@ -24,7 +24,7 @@ const Classes = () => {
   const { data: classes = [] } = useQuery({
     queryKey: ["classes"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("classes").select("*");
+      const { data, error } = await supabase.from("classes" as any).select("*");
       if (error) throw error;
       return data;
     },
@@ -34,7 +34,7 @@ const Classes = () => {
     queryKey: ["enrollments", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .select("*")
         .eq("user_id", user!.id);
       if (error) throw error;
@@ -46,7 +46,7 @@ const Classes = () => {
   const enrollMutation = useMutation({
     mutationFn: async (classId: string) => {
       const { error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .insert({ class_id: classId, user_id: user!.id });
       if (error) throw error;
     },
@@ -62,7 +62,7 @@ const Classes = () => {
   const unenrollMutation = useMutation({
     mutationFn: async (classId: string) => {
       const { error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .delete()
         .eq("class_id", classId)
         .eq("user_id", user!.id);
