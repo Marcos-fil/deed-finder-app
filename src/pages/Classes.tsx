@@ -34,7 +34,7 @@ const Classes = () => {
     queryKey: ["enrollments", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .select("*")
         .eq("user_id", user!.id);
       if (error) throw error;
