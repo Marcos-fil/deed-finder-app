@@ -1,8 +1,9 @@
-import { Home, Heart, MapPin, User } from "lucide-react";
+import { Home, Heart, MapPin, User, GraduationCap } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
   { path: "/", label: "Início", icon: Home },
+  { path: "/aulas", label: "Aulas", icon: GraduationCap },
   { path: "/doacoes", label: "Doações", icon: Heart },
   { path: "/mapa", label: "Mapa", icon: MapPin },
   { path: "/perfil", label: "Perfil", icon: User },
