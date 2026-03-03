@@ -13,6 +13,7 @@ import Map from "./pages/Map";
 import Profile from "./pages/Profile";
 import ActionDetail from "./pages/ActionDetail";
 import Participate from "./pages/Participate";
+import Classes from "./pages/Classes";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
@@ -39,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/acao/:slug" element={<ProtectedRoute><ActionDetail /></ProtectedRoute>} />
         <Route path="/acao/:slug/participar" element={<ProtectedRoute><Participate /></ProtectedRoute>} />
+        <Route path="/aulas" element={<ProtectedRoute><Classes /></ProtectedRoute>} />
         <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
