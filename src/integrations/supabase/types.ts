@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      class_enrollments: {
+        Row: {
+          class_id: string
+          enrolled_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          class_id: string
+          enrolled_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          class_id?: string
+          enrolled_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_enrollments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          category: string
+          created_at: string
+          day_of_week: string
+          id: string
+          max_capacity: number | null
+          time_slot: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          day_of_week: string
+          id?: string
+          max_capacity?: number | null
+          time_slot: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          day_of_week?: string
+          id?: string
+          max_capacity?: number | null
+          time_slot?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
