@@ -46,7 +46,7 @@ const Classes = () => {
   const enrollMutation = useMutation({
     mutationFn: async (classId: string) => {
       const { error } = await supabase
-        .from("class_enrollments")
+        .from("class_enrollments" as any)
         .insert({ class_id: classId, user_id: user!.id });
       if (error) throw error;
     },
