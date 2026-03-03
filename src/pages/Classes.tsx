@@ -24,7 +24,7 @@ const Classes = () => {
   const { data: classes = [] } = useQuery({
     queryKey: ["classes"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("classes").select("*");
+      const { data, error } = await supabase.from("classes" as any).select("*");
       if (error) throw error;
       return data;
     },
