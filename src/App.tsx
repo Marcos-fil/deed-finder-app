@@ -13,6 +13,7 @@ import Map from "./pages/Map";
 import Profile from "./pages/Profile";
 import ActionDetail from "./pages/ActionDetail";
 import Participate from "./pages/Participate";
+import Classes from "./pages/Classes";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
