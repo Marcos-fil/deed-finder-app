@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2, MapPin, Navigation, ExternalLink, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
