@@ -2,10 +2,27 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2, MapPin, Navigation, ExternalLink, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+
+const locationConfig: Record<string, { name: string; address: string; lat: number; lng: number; googleMapsUrl: string }> = {
+  "Futebol": {
+    name: "Campo Da Vila Cretti",
+    address: "R. Ingá - Jardim Angela Maria, Carapicuíba - SP",
+    lat: -23.5370,
+    lng: -46.8280,
+    googleMapsUrl: "https://maps.app.goo.gl/BrD1w9ymLqw7X54o6",
+  },
+  "default": {
+    name: "Missão Vida",
+    address: "R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP, 06396-190",
+    lat: -23.5245,
+    lng: -46.8355,
+    googleMapsUrl: "https://maps.app.goo.gl/Cm6VyPve2Jy6w6ym9",
+  },
+};
 
 const categoryConfig: Record<string, { icon: typeof Dribbble; color: string; bgColor: string }> = {
   "Futebol": { icon: Dribbble, color: "text-primary", bgColor: "bg-primary/10" },
@@ -129,7 +146,7 @@ const Classes = () => {
             })}
           </div>
         ) : (
-          /* Class Days List */
+          /* Class Days List + Location */
           <div className="space-y-3">
             {filteredClasses.map((cls: any) => {
               const isEnrolled = enrolledClassIds.has(cls.id);
@@ -179,6 +196,51 @@ const Classes = () => {
                 </div>
               );
             })}
+
+            {/* Location Section */}
+            {(() => {
+              const loc = locationConfig[selectedCategory] ?? locationConfig["default"];
+              const embedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${loc.lat},${loc.lng}&zoom=15`;
+              const directionsUrl = `https://www.google.com/maps/dir//${loc.lat},${loc.lng}`;
+              return (
+                <div className="space-y-3 pt-2">
+                  <h3 className="font-display font-semibold text-foreground text-sm flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    Local das aulas
+                  </h3>
+                  <div className="relative rounded-xl overflow-hidden border border-border" style={{ height: "200px" }}>
+                    <iframe
+                      src={embedUrl}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title={`Mapa - ${loc.name}`}
+                    />
+                  </div>
+                  <div className="bg-card rounded-xl p-4 border border-border">
+                    <div className="flex items-start gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <MapPin className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm text-foreground">{loc.name}</h4>
+                        <p className="text-xs text-muted-foreground mt-0.5">{loc.address}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Button className="w-full h-11" size="lg" asChild>
+                    <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+                      <Navigation className="h-4 w-4 mr-2" />
+                      Abrir rota no Google Maps
+                      <ExternalLink className="h-3.5 w-3.5 ml-2" />
+                    </a>
+                  </Button>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
