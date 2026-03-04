@@ -7,6 +7,23 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+const locationConfig: Record<string, { name: string; address: string; lat: number; lng: number; googleMapsUrl: string }> = {
+  "Futebol": {
+    name: "Campo Da Vila Cretti",
+    address: "R. Ingá - Jardim Angela Maria, Carapicuíba - SP",
+    lat: -23.5370,
+    lng: -46.8280,
+    googleMapsUrl: "https://maps.app.goo.gl/BrD1w9ymLqw7X54o6",
+  },
+  "default": {
+    name: "Missão Vida",
+    address: "R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP, 06396-190",
+    lat: -23.5245,
+    lng: -46.8355,
+    googleMapsUrl: "https://maps.app.goo.gl/Cm6VyPve2Jy6w6ym9",
+  },
+};
+
 const categoryConfig: Record<string, { icon: typeof Dribbble; color: string; bgColor: string }> = {
   "Futebol": { icon: Dribbble, color: "text-primary", bgColor: "bg-primary/10" },
   "Jiu-jítsu": { icon: Shield, color: "text-accent", bgColor: "bg-accent/10" },
