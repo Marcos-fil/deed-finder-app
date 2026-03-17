@@ -127,7 +127,10 @@ const Profile = () => {
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
             { icon: Bell, label: "Notificações", action: () => {} },
-            { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
+            ...(isAdmin ? [
+              { icon: Shield, label: "Painel Admin", action: () => navigate("/admin") },
+              { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
+            ] : []),
             { icon: HelpCircle, label: "Ajuda e Suporte", action: () => navigate("/ajuda") },
             { icon: LogOut, label: "Sair", danger: true, action: handleSignOut },
           ].map(({ icon: Icon, label, danger, action }, i, arr) => (
