@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
