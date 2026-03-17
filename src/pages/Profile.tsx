@@ -1,12 +1,14 @@
 import { useState, useRef } from "react";
-import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera } from "lucide-react";
+import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -125,7 +127,10 @@ const Profile = () => {
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
             { icon: Bell, label: "Notificações", action: () => {} },
-            { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
+            ...(isAdmin ? [
+              { icon: Shield, label: "Painel Admin", action: () => navigate("/admin") },
+              { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
+            ] : []),
             { icon: HelpCircle, label: "Ajuda e Suporte", action: () => navigate("/ajuda") },
             { icon: LogOut, label: "Sair", danger: true, action: handleSignOut },
           ].map(({ icon: Icon, label, danger, action }, i, arr) => (
