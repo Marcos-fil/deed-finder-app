@@ -55,7 +55,8 @@ const AppRoutes = () => {
         <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/configuracoes" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/configuracoes" element={<AdminRoute><Settings /></AdminRoute>} />
+        <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/ajuda" element={<ProtectedRoute><Help /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
