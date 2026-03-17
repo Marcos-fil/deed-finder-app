@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
-import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera } from "lucide-react";
+import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
