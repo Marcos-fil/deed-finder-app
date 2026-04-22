@@ -1,4 +1,4 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -14,6 +14,12 @@ const donationOptions = [
 
 const PIX_KEY = "missaovida@pix.com";
 const PIX_NAME = "Missão Vida";
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+const subscriptionMonths = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+].map((name, index) => ({ name, index, dueDate: new Date(currentYear, index, 10) }));
 const couponCollectionPoints = [
   {
     name: "Sede Missão Vida",
@@ -38,7 +44,10 @@ const Donations = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pix" | "cupom">("pix");
+  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura">("pix");
+  const [subscriptionAmount, setSubscriptionAmount] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [paidMonths, setPaidMonths] = useState<number[]>([]);
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
@@ -65,6 +74,30 @@ const Donations = () => {
     setCopied(false);
   };
 
+  const subscriptionValue = subscriptionAmount ? parseFloat(subscriptionAmount) : 0;
+  const selectedSubscriptionMonth = subscriptionMonths[selectedMonth];
+  const subscriptionPayload = subscriptionValue > 0 ? generatePixPayload(subscriptionValue) : "";
+
+  const getMonthStatus = (monthIndex: number, dueDate: Date) => {
+    if (paidMonths.includes(monthIndex)) return { label: "Pago", className: "bg-success text-success-foreground" };
+    if (dueDate < new Date()) return { label: "Atrasado", className: "bg-destructive text-destructive-foreground" };
+    return { label: "Resta pagar", className: "bg-warning text-warning-foreground" };
+  };
+
+  const handleGenerateSubscriptionPix = () => {
+    if (subscriptionValue <= 0) {
+      toast({ title: "Informe um valor", description: "Digite o valor da assinatura mensal." });
+      return;
+    }
+    toast({ title: "PIX da assinatura gerado", description: `Mês selecionado: ${selectedSubscriptionMonth.name}.` });
+  };
+
+  const handleCopySubscriptionPix = () => {
+    navigator.clipboard.writeText(subscriptionPayload);
+    setPaidMonths((months) => months.includes(selectedMonth) ? months : [...months, selectedMonth]);
+    toast({ title: "Código PIX copiado!", description: "Após o pagamento, o mês ficará marcado como pago neste aparelho." });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -81,11 +114,14 @@ const Donations = () => {
       </div>
 
       <div className="px-4 -mt-4 relative z-10">
-        <div className="flex gap-2 mb-4">
-          <button onClick={() => setActiveTab("pix")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <button onClick={() => setActiveTab("pix")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <QrCode className="h-4 w-4 inline mr-1.5 -mt-0.5" /> PIX
           </button>
-          <button onClick={() => setActiveTab("cupom")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+          <button onClick={() => setActiveTab("assinatura")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "assinatura" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+            <CalendarDays className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Assinatura
+          </button>
+          <button onClick={() => setActiveTab("cupom")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <ReceiptText className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Cupom fiscal
           </button>
         </div>
