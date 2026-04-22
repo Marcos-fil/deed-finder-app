@@ -20,6 +20,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
+import ParentDashboard from "./pages/ParentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const AppRoutes = () => {
         <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/responsavel" element={<ProtectedRoute><ParentDashboard /></ProtectedRoute>} />
         <Route path="/configuracoes" element={<AdminRoute><Settings /></AdminRoute>} />
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/ajuda" element={<ProtectedRoute><Help /></ProtectedRoute>} />
