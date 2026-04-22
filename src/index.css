@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 24 10% 15%;
 
-    --primary: 152 45% 38%;
+    --primary: 215 72% 46%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 36 60% 92%;
@@ -32,23 +32,23 @@
 
     --border: 36 20% 88%;
     --input: 36 20% 88%;
-    --ring: 152 45% 38%;
+    --ring: 215 72% 46%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 40 33% 97%;
     --sidebar-foreground: 24 10% 15%;
-    --sidebar-primary: 152 45% 38%;
+    --sidebar-primary: 215 72% 46%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 36 60% 92%;
     --sidebar-accent-foreground: 24 30% 25%;
     --sidebar-border: 36 20% 88%;
-    --sidebar-ring: 152 45% 38%;
+    --sidebar-ring: 215 72% 46%;
 
     --font-display: 'Playfair Display', serif;
     --font-body: 'DM Sans', sans-serif;
 
-    --warm-gradient: linear-gradient(135deg, hsl(152 45% 38%), hsl(152 45% 28%));
+    --warm-gradient: linear-gradient(135deg, hsl(215 72% 46%), hsl(220 68% 34%));
     --sunset-gradient: linear-gradient(135deg, hsl(28 80% 58%), hsl(36 70% 55%));
     --hero-overlay: linear-gradient(180deg, hsla(24 10% 15% / 0.3) 0%, hsla(24 10% 15% / 0.6) 100%);
   }
@@ -60,7 +60,7 @@
     --card-foreground: 40 33% 95%;
     --popover: 24 10% 14%;
     --popover-foreground: 40 33% 95%;
-    --primary: 152 45% 45%;
+    --primary: 215 72% 56%;
     --primary-foreground: 0 0% 100%;
     --secondary: 24 15% 20%;
     --secondary-foreground: 40 33% 90%;
@@ -72,7 +72,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 24 10% 20%;
     --input: 24 10% 20%;
-    --ring: 152 45% 45%;
+    --ring: 215 72% 56%;
   }
 }
 
