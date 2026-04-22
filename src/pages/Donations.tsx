@@ -1,4 +1,4 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -14,6 +14,12 @@ const donationOptions = [
 
 const PIX_KEY = "missaovida@pix.com";
 const PIX_NAME = "Missão Vida";
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+const subscriptionMonths = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+].map((name, index) => ({ name, index, dueDate: new Date(currentYear, index, 10) }));
 const couponCollectionPoints = [
   {
     name: "Sede Missão Vida",
@@ -38,7 +44,10 @@ const Donations = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pix" | "cupom">("pix");
+  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura">("pix");
+  const [subscriptionAmount, setSubscriptionAmount] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [paidMonths, setPaidMonths] = useState<number[]>([]);
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
@@ -65,6 +74,30 @@ const Donations = () => {
     setCopied(false);
   };
 
+  const subscriptionValue = subscriptionAmount ? parseFloat(subscriptionAmount) : 0;
+  const selectedSubscriptionMonth = subscriptionMonths[selectedMonth];
+  const subscriptionPayload = subscriptionValue > 0 ? generatePixPayload(subscriptionValue) : "";
+
+  const getMonthStatus = (monthIndex: number, dueDate: Date) => {
+    if (paidMonths.includes(monthIndex)) return { label: "Pago", className: "bg-success text-success-foreground" };
+    if (dueDate < new Date()) return { label: "Atrasado", className: "bg-destructive text-destructive-foreground" };
+    return { label: "Resta pagar", className: "bg-warning text-warning-foreground" };
+  };
+
+  const handleGenerateSubscriptionPix = () => {
+    if (subscriptionValue <= 0) {
+      toast({ title: "Informe um valor", description: "Digite o valor da assinatura mensal." });
+      return;
+    }
+    toast({ title: "PIX da assinatura gerado", description: `Mês selecionado: ${selectedSubscriptionMonth.name}.` });
+  };
+
+  const handleCopySubscriptionPix = () => {
+    navigator.clipboard.writeText(subscriptionPayload);
+    setPaidMonths((months) => months.includes(selectedMonth) ? months : [...months, selectedMonth]);
+    toast({ title: "Código PIX copiado!", description: "Após o pagamento, o mês ficará marcado como pago neste aparelho." });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -81,11 +114,14 @@ const Donations = () => {
       </div>
 
       <div className="px-4 -mt-4 relative z-10">
-        <div className="flex gap-2 mb-4">
-          <button onClick={() => setActiveTab("pix")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <button onClick={() => setActiveTab("pix")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <QrCode className="h-4 w-4 inline mr-1.5 -mt-0.5" /> PIX
           </button>
-          <button onClick={() => setActiveTab("cupom")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+          <button onClick={() => setActiveTab("assinatura")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "assinatura" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+            <CalendarDays className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Assinatura
+          </button>
+          <button onClick={() => setActiveTab("cupom")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <ReceiptText className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Cupom fiscal
           </button>
         </div>
@@ -117,6 +153,76 @@ const Donations = () => {
                 </Button>
               </div>
             ))}
+          </div>
+        ) : activeTab === "assinatura" ? (
+          <div className="space-y-4 animate-fade-in-up">
+            <div className="bg-card rounded-xl p-4 border border-border">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <CalendarDays className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="font-display text-lg font-semibold text-foreground">Assinatura mensal</h2>
+              <p className="text-sm text-muted-foreground mt-1">Escolha um valor livre, selecione o mês e gere o PIX da contribuição.</p>
+            </div>
+
+            <div className="bg-card rounded-xl p-4 border border-border">
+              <label className="text-sm font-medium text-foreground mb-2 block">Valor mensal</label>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-muted-foreground font-medium">R$</span>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="0,00"
+                  value={subscriptionAmount}
+                  onChange={(e) => setSubscriptionAmount(e.target.value)}
+                  className="flex-1 bg-muted rounded-lg px-3 py-2.5 text-foreground text-lg font-semibold placeholder:text-muted-foreground/50 border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <Button className="w-full gradient-primary text-primary-foreground" onClick={handleGenerateSubscriptionPix}>
+                <QrCode className="h-4 w-4 mr-2" /> Gerar PIX da assinatura
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {subscriptionMonths.map((month) => {
+                const status = getMonthStatus(month.index, month.dueDate);
+                return (
+                  <button
+                    key={month.name}
+                    onClick={() => setSelectedMonth(month.index)}
+                    className={`text-left bg-card rounded-xl p-4 border transition-all ${selectedMonth === month.index ? "border-primary shadow-md" : "border-border"}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="font-semibold text-sm text-foreground">{month.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Vencimento: {month.dueDate.toLocaleDateString("pt-BR")}
+                        </p>
+                      </div>
+                      <span className={`rounded-full px-2 py-1 text-[11px] font-semibold whitespace-nowrap ${status.className}`}>
+                        {status.label}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {subscriptionValue > 0 && (
+              <div className="bg-card rounded-2xl p-5 border border-border flex flex-col items-center gap-4">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {selectedSubscriptionMonth.dueDate.toLocaleDateString("pt-BR")}</p>
+                  <p className="font-display text-2xl font-bold text-primary">
+                    R$ {subscriptionValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div className="bg-white p-4 rounded-xl">
+                  <QRCodeSVG value={subscriptionPayload} size={180} level="M" />
+                </div>
+                <Button variant="outline" className="w-full" onClick={handleCopySubscriptionPix}>
+                  <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
         <>
