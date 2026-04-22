@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera, Shield } from "lucide-react";
+import { Heart, Award, Calendar, Settings as SettingsIcon, LogOut, ChevronRight, Bell, HelpCircle, Camera, Shield, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
@@ -127,6 +127,7 @@ const Profile = () => {
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
             { icon: Bell, label: "Notificações", action: () => {} },
+            { icon: Users, label: "Conta dos Pais", action: () => navigate("/responsavel") },
             ...(isAdmin ? [
               { icon: Shield, label: "Painel Admin", action: () => navigate("/admin") },
               { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
