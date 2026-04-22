@@ -1,4 +1,4 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -19,7 +19,7 @@ const currentMonth = new Date().getMonth();
 const subscriptionMonths = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-].map((name, index) => ({ name, index, dueDate: new Date(currentYear, index, 10) }));
+].map((name, index) => ({ name, index }));
 const couponCollectionPoints = [
   {
     name: "Sede Missão Vida",
@@ -48,6 +48,9 @@ const Donations = () => {
   const [subscriptionAmount, setSubscriptionAmount] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [paidMonths, setPaidMonths] = useState<number[]>([]);
+  const [subscriptionJoined, setSubscriptionJoined] = useState(false);
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState<Date | null>(null);
+  const [showSubscriptionPix, setShowSubscriptionPix] = useState(false);
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
@@ -78,18 +81,34 @@ const Donations = () => {
   const selectedSubscriptionMonth = subscriptionMonths[selectedMonth];
   const subscriptionPayload = subscriptionValue > 0 ? generatePixPayload(subscriptionValue) : "";
 
-  const getMonthStatus = (monthIndex: number, dueDate: Date) => {
+  const getSubscriptionDueDate = (monthIndex: number) => {
+    const startDate = subscriptionStartDate || new Date();
+    const startDay = startDate.getDate();
+    const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
+    return new Date(currentYear, monthIndex, Math.min(startDay, lastDayOfMonth));
+  };
+
+  const getMonthStatus = (monthIndex: number) => {
+    const dueDate = getSubscriptionDueDate(monthIndex);
     if (paidMonths.includes(monthIndex)) return { label: "Pago", className: "bg-success text-success-foreground" };
     if (dueDate < new Date()) return { label: "Atrasado", className: "bg-destructive text-destructive-foreground" };
     return { label: "Resta pagar", className: "bg-warning text-warning-foreground" };
   };
 
-  const handleGenerateSubscriptionPix = () => {
+  const handleJoinSubscription = () => {
+    setSubscriptionJoined(true);
+    setSubscriptionStartDate(new Date());
+    setSelectedMonth(currentMonth);
+    setShowSubscriptionPix(false);
+  };
+
+  const handleOpenSubscriptionMonth = (monthIndex: number) => {
     if (subscriptionValue <= 0) {
       toast({ title: "Informe um valor", description: "Digite o valor da assinatura mensal." });
       return;
     }
-    toast({ title: "PIX da assinatura gerado", description: `Mês selecionado: ${selectedSubscriptionMonth.name}.` });
+    setSelectedMonth(monthIndex);
+    setShowSubscriptionPix(true);
   };
 
   const handleCopySubscriptionPix = () => {
