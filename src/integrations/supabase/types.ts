@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      class_attendance: {
+        Row: {
+          class_date: string
+          class_id: string
+          confirmed_at: string
+          confirmed_by: string
+          enrollment_id: string
+          id: string
+          student_user_id: string
+        }
+        Insert: {
+          class_date?: string
+          class_id: string
+          confirmed_at?: string
+          confirmed_by: string
+          enrollment_id: string
+          id?: string
+          student_user_id: string
+        }
+        Update: {
+          class_date?: string
+          class_id?: string
+          confirmed_at?: string
+          confirmed_by?: string
+          enrollment_id?: string
+          id?: string
+          student_user_id?: string
+        }
+        Relationships: []
+      }
       class_enrollments: {
         Row: {
           class_id: string
@@ -100,6 +130,33 @@ export type Database = {
           pix_key?: string | null
           status?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      parent_child_links: {
+        Row: {
+          child_user_id: string
+          created_at: string
+          id: string
+          parent_user_id: string
+          relationship: string
+          status: string
+        }
+        Insert: {
+          child_user_id: string
+          created_at?: string
+          id?: string
+          parent_user_id: string
+          relationship?: string
+          status?: string
+        }
+        Update: {
+          child_user_id?: string
+          created_at?: string
+          id?: string
+          parent_user_id?: string
+          relationship?: string
+          status?: string
         }
         Relationships: []
       }
