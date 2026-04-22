@@ -1,4 +1,4 @@
-import { Heart, CreditCard, ArrowLeft, Copy, Check, QrCode } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -14,6 +14,18 @@ const donationOptions = [
 
 const PIX_KEY = "missaovida@pix.com";
 const PIX_NAME = "Missão Vida";
+const couponCollectionPoints = [
+  {
+    name: "Sede Missão Vida",
+    address: "R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP",
+    mapsUrl: "https://maps.app.goo.gl/Cm6VyPve2Jy6w6ym9",
+  },
+  {
+    name: "Ponto de apoio - Vila Cretti",
+    address: "R. Ingá - Jardim Angela Maria, Carapicuíba - SP",
+    mapsUrl: "https://maps.app.goo.gl/BrD1w9ymLqw7X54o6",
+  },
+];
 
 const generatePixPayload = (amount: number) => {
   const amountStr = amount.toFixed(2);
@@ -26,6 +38,7 @@ const Donations = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"pix" | "cupom">("pix");
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
@@ -68,6 +81,45 @@ const Donations = () => {
       </div>
 
       <div className="px-4 -mt-4 relative z-10">
+        <div className="flex gap-2 mb-4">
+          <button onClick={() => setActiveTab("pix")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+            <QrCode className="h-4 w-4 inline mr-1.5 -mt-0.5" /> PIX
+          </button>
+          <button onClick={() => setActiveTab("cupom")} className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+            <ReceiptText className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Cupom fiscal
+          </button>
+        </div>
+
+        {activeTab === "cupom" ? (
+          <div className="space-y-4 animate-fade-in-up">
+            <div className="bg-card rounded-xl p-4 border border-border">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <ReceiptText className="h-5 w-5 text-primary" />
+              </div>
+              <h2 className="font-display text-lg font-semibold text-foreground">Doação de cupom fiscal</h2>
+              <p className="text-sm text-muted-foreground mt-1">Entregue seus cupons fiscais em um dos pontos de coleta para apoiar os projetos da ONG.</p>
+            </div>
+            {couponCollectionPoints.map((point) => (
+              <div key={point.name} className="bg-card rounded-xl p-4 border border-border">
+                <div className="flex items-start gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-sm text-foreground">{point.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{point.address}</p>
+                  </div>
+                </div>
+                <Button className="w-full mt-3" variant="outline" asChild>
+                  <a href={point.mapsUrl} target="_blank" rel="noopener noreferrer">
+                    <Navigation className="h-4 w-4 mr-2" /> Abrir localização <ExternalLink className="h-3.5 w-3.5 ml-2" />
+                  </a>
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+        <>
         {/* Progress */}
         <div className="bg-card rounded-xl p-4 shadow-sm border border-border mb-6">
           <div className="flex justify-between text-sm mb-2">
@@ -157,6 +209,8 @@ const Donations = () => {
               Alterar valor
             </Button>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>
