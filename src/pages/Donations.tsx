@@ -1,4 +1,4 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -19,7 +19,7 @@ const currentMonth = new Date().getMonth();
 const subscriptionMonths = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
-].map((name, index) => ({ name, index, dueDate: new Date(currentYear, index, 10) }));
+].map((name, index) => ({ name, index }));
 const couponCollectionPoints = [
   {
     name: "Sede Missão Vida",
@@ -48,6 +48,9 @@ const Donations = () => {
   const [subscriptionAmount, setSubscriptionAmount] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [paidMonths, setPaidMonths] = useState<number[]>([]);
+  const [subscriptionJoined, setSubscriptionJoined] = useState(false);
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState<Date | null>(null);
+  const [showSubscriptionPix, setShowSubscriptionPix] = useState(false);
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
@@ -78,18 +81,34 @@ const Donations = () => {
   const selectedSubscriptionMonth = subscriptionMonths[selectedMonth];
   const subscriptionPayload = subscriptionValue > 0 ? generatePixPayload(subscriptionValue) : "";
 
-  const getMonthStatus = (monthIndex: number, dueDate: Date) => {
+  const getSubscriptionDueDate = (monthIndex: number) => {
+    const startDate = subscriptionStartDate || new Date();
+    const startDay = startDate.getDate();
+    const lastDayOfMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
+    return new Date(currentYear, monthIndex, Math.min(startDay, lastDayOfMonth));
+  };
+
+  const getMonthStatus = (monthIndex: number) => {
+    const dueDate = getSubscriptionDueDate(monthIndex);
     if (paidMonths.includes(monthIndex)) return { label: "Pago", className: "bg-success text-success-foreground" };
     if (dueDate < new Date()) return { label: "Atrasado", className: "bg-destructive text-destructive-foreground" };
     return { label: "Resta pagar", className: "bg-warning text-warning-foreground" };
   };
 
-  const handleGenerateSubscriptionPix = () => {
+  const handleJoinSubscription = () => {
+    setSubscriptionJoined(true);
+    setSubscriptionStartDate(new Date());
+    setSelectedMonth(currentMonth);
+    setShowSubscriptionPix(false);
+  };
+
+  const handleOpenSubscriptionMonth = (monthIndex: number) => {
     if (subscriptionValue <= 0) {
       toast({ title: "Informe um valor", description: "Digite o valor da assinatura mensal." });
       return;
     }
-    toast({ title: "PIX da assinatura gerado", description: `Mês selecionado: ${selectedSubscriptionMonth.name}.` });
+    setSelectedMonth(monthIndex);
+    setShowSubscriptionPix(true);
   };
 
   const handleCopySubscriptionPix = () => {
@@ -156,61 +175,32 @@ const Donations = () => {
           </div>
         ) : activeTab === "assinatura" ? (
           <div className="space-y-4 animate-fade-in-up">
-            <div className="bg-card rounded-xl p-4 border border-border">
-              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-                <CalendarDays className="h-5 w-5 text-primary" />
+            {!subscriptionJoined ? (
+              <div className="space-y-4">
+                <div className="bg-card rounded-xl p-4 border border-border">
+                  <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                    <CalendarDays className="h-5 w-5 text-primary" />
+                  </div>
+                  <h2 className="font-display text-lg font-semibold text-foreground">Programa de assinatura</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Uma contribuição mensal livre para manter as ações da ONG acontecendo com previsibilidade.</p>
+                </div>
+                <div className="bg-card rounded-xl p-4 border border-border">
+                  <div className="aspect-video rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground">
+                    <PlayCircle className="h-10 w-10 mb-2" />
+                    <p className="text-sm font-medium">Vídeo explicativo em breve</p>
+                  </div>
+                </div>
+                <Button className="w-full h-12 gradient-primary text-primary-foreground" onClick={handleJoinSubscription}>
+                  Quero participar da assinatura
+                </Button>
               </div>
-              <h2 className="font-display text-lg font-semibold text-foreground">Assinatura mensal</h2>
-              <p className="text-sm text-muted-foreground mt-1">Escolha um valor livre, selecione o mês e gere o PIX da contribuição.</p>
-            </div>
-
-            <div className="bg-card rounded-xl p-4 border border-border">
-              <label className="text-sm font-medium text-foreground mb-2 block">Valor mensal</label>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-muted-foreground font-medium">R$</span>
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="0,00"
-                  value={subscriptionAmount}
-                  onChange={(e) => setSubscriptionAmount(e.target.value)}
-                  className="flex-1 bg-muted rounded-lg px-3 py-2.5 text-foreground text-lg font-semibold placeholder:text-muted-foreground/50 border-0 outline-none focus:ring-2 focus:ring-primary/30"
-                />
-              </div>
-              <Button className="w-full gradient-primary text-primary-foreground" onClick={handleGenerateSubscriptionPix}>
-                <QrCode className="h-4 w-4 mr-2" /> Gerar PIX da assinatura
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {subscriptionMonths.map((month) => {
-                const status = getMonthStatus(month.index, month.dueDate);
-                return (
-                  <button
-                    key={month.name}
-                    onClick={() => setSelectedMonth(month.index)}
-                    className={`text-left bg-card rounded-xl p-4 border transition-all ${selectedMonth === month.index ? "border-primary shadow-md" : "border-border"}`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-semibold text-sm text-foreground">{month.name}</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Vencimento: {month.dueDate.toLocaleDateString("pt-BR")}
-                        </p>
-                      </div>
-                      <span className={`rounded-full px-2 py-1 text-[11px] font-semibold whitespace-nowrap ${status.className}`}>
-                        {status.label}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {subscriptionValue > 0 && (
+            ) : showSubscriptionPix ? (
               <div className="bg-card rounded-2xl p-5 border border-border flex flex-col items-center gap-4">
+                <Button variant="ghost" className="self-start -ml-2" onClick={() => setShowSubscriptionPix(false)}>
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Voltar aos meses
+                </Button>
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {selectedSubscriptionMonth.dueDate.toLocaleDateString("pt-BR")}</p>
+                  <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {getSubscriptionDueDate(selectedMonth).toLocaleDateString("pt-BR")}</p>
                   <p className="font-display text-2xl font-bold text-primary">
                     R$ {subscriptionValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </p>
@@ -222,6 +212,47 @@ const Donations = () => {
                   <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
                 </Button>
               </div>
+            ) : (
+              <>
+                <div className="bg-card rounded-xl p-4 border border-border">
+                  <label className="text-sm font-medium text-foreground mb-2 block">Valor mensal</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground font-medium">R$</span>
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="0,00"
+                      value={subscriptionAmount}
+                      onChange={(e) => setSubscriptionAmount(e.target.value)}
+                      className="flex-1 bg-muted rounded-lg px-3 py-2.5 text-foreground text-lg font-semibold placeholder:text-muted-foreground/50 border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">O vencimento mensal será sempre no dia {subscriptionStartDate?.getDate()}.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {subscriptionMonths.map((month) => {
+                    const status = getMonthStatus(month.index);
+                    const dueDate = getSubscriptionDueDate(month.index);
+                    return (
+                      <button
+                        key={month.name}
+                        onClick={() => handleOpenSubscriptionMonth(month.index)}
+                        className={`text-left bg-card rounded-xl p-4 border transition-all ${selectedMonth === month.index ? "border-primary shadow-md" : "border-border"}`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h3 className="font-semibold text-sm text-foreground">{month.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">Vencimento: {dueDate.toLocaleDateString("pt-BR")}</p>
+                          </div>
+                          <span className={`rounded-full px-2 py-1 text-[11px] font-semibold whitespace-nowrap ${status.className}`}>
+                            {status.label}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         ) : (
