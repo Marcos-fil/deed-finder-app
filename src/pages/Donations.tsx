@@ -230,7 +230,9 @@ const Donations = () => {
                   <p className="text-xs text-muted-foreground mt-2">O vencimento mensal será sempre no dia {subscriptionStartDate?.getDate()}.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {subscriptionMonths.map((month) => {
+                  {subscriptionMonths
+                    .filter((month) => !subscriptionStartDate || month.index >= subscriptionStartDate.getMonth())
+                    .map((month) => {
                     const status = getMonthStatus(month.index);
                     const dueDate = getSubscriptionDueDate(month.index);
                     return (
