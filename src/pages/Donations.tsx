@@ -219,7 +219,7 @@ const Donations = () => {
           </div>
         ) : activeTab === "assinatura" ? (
           <div className="space-y-4 animate-fade-in-up">
-            {!subscriptionJoined ? (
+            {!subscriptionJoined && !showSubscriptionForm ? (
               <div className="space-y-4">
                 <div className="bg-card rounded-xl p-4 border border-border">
                   <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
@@ -236,6 +236,90 @@ const Donations = () => {
                 </div>
                 <Button className="w-full h-12 gradient-primary text-primary-foreground" onClick={handleJoinSubscription}>
                   Quero participar da assinatura
+                </Button>
+              </div>
+            ) : showSubscriptionForm ? (
+              <div className="space-y-4">
+                <div className="bg-card rounded-xl p-4 border border-border">
+                  <Button variant="ghost" className="-ml-2 mb-2" onClick={() => setShowSubscriptionForm(false)}>
+                    <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
+                  </Button>
+                  <h2 className="font-display text-lg font-semibold text-foreground">Cadastro do assinante</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para iniciar o programa de assinatura.</p>
+                </div>
+
+                <div className="bg-card rounded-xl p-4 border border-border space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Nome completo</label>
+                    <input
+                      type="text"
+                      value={subscriberName}
+                      onChange={(e) => setSubscriberName(e.target.value)}
+                      placeholder="Seu nome"
+                      maxLength={120}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Data de nascimento</label>
+                    <input
+                      type="date"
+                      value={subscriberBirthDate}
+                      onChange={(e) => setSubscriberBirthDate(e.target.value)}
+                      max={new Date().toISOString().split("T")[0]}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  {subscriberAge !== null && (
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Idade</label>
+                      <div className="bg-muted rounded-lg px-3 py-2.5 text-foreground font-semibold">
+                        {subscriberAge} {subscriberAge === 1 ? "ano" : "anos"}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {isMinor && (
+                  <div className="bg-warning/10 rounded-xl p-4 border border-warning/30 space-y-3">
+                    <p className="text-sm font-semibold text-foreground">Autorização do responsável</p>
+                    <p className="text-xs text-muted-foreground">Por ser menor de 18 anos, é necessária a autorização de um responsável legal.</p>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Nome do responsável</label>
+                      <input
+                        type="text"
+                        value={guardianName}
+                        onChange={(e) => setGuardianName(e.target.value)}
+                        placeholder="Nome completo do responsável"
+                        maxLength={120}
+                        className="w-full bg-card rounded-lg px-3 py-2.5 text-foreground border border-border outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">CPF do responsável</label>
+                      <input
+                        type="text"
+                        value={guardianDocument}
+                        onChange={(e) => setGuardianDocument(e.target.value)}
+                        placeholder="000.000.000-00"
+                        maxLength={20}
+                        className="w-full bg-card rounded-lg px-3 py-2.5 text-foreground border border-border outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <label className="flex items-start gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={guardianAuthorized}
+                        onChange={(e) => setGuardianAuthorized(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-primary"
+                      />
+                      <span className="text-xs text-foreground">Eu, responsável legal, autorizo a participação do menor no programa de assinatura.</span>
+                    </label>
+                  </div>
+                )}
+
+                <Button className="w-full h-12 gradient-primary text-primary-foreground" onClick={handleConfirmSubscriptionRegistration}>
+                  Confirmar cadastro
                 </Button>
               </div>
             ) : showSubscriptionPix ? (
