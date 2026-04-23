@@ -288,6 +288,28 @@ const Donations = () => {
                       </div>
                     </div>
                   )}
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Telefone</label>
+                    <input
+                      type="tel"
+                      value={subscriberPhone}
+                      onChange={(e) => setSubscriberPhone(e.target.value)}
+                      placeholder="(11) 90000-0000"
+                      maxLength={20}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Endereço</label>
+                    <textarea
+                      value={subscriberAddress}
+                      onChange={(e) => setSubscriberAddress(e.target.value)}
+                      placeholder="Rua, número, bairro, cidade - UF"
+                      maxLength={250}
+                      rows={2}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                    />
+                  </div>
                 </div>
 
                 {isMinor && (
