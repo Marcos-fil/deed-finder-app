@@ -286,6 +286,56 @@ const Admin = () => {
               </div>
             )}
 
+            {activeTab === "assinaturas" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-card rounded-xl p-4 border border-border">
+                    <p className="text-xs text-muted-foreground">Cadastros</p>
+                    <p className="text-2xl font-bold text-primary">{subscriptions.length}</p>
+                  </div>
+                  <div className="bg-card rounded-xl p-4 border border-border">
+                    <p className="text-xs text-muted-foreground">Menores de 18</p>
+                    <p className="text-2xl font-bold text-foreground">{subscriptions.filter((s: any) => s.is_minor).length}</p>
+                  </div>
+                </div>
+
+                {subscriptions.length > 0 ? (
+                  <div className="space-y-3">
+                    {subscriptions.map((s: any) => (
+                      <div key={s.id} className="bg-card rounded-xl border border-border p-4 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="font-semibold text-sm text-foreground">{s.subscriber_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {s.age} anos • Nasc. {new Date(s.birth_date).toLocaleDateString("pt-BR")}
+                            </p>
+                          </div>
+                          {s.is_minor && <Badge variant="secondary" className="text-[10px]">Menor</Badge>}
+                        </div>
+                        <div className="text-xs text-muted-foreground space-y-0.5">
+                          <p>📞 {s.phone}</p>
+                          <p>📍 {s.address}</p>
+                          {s.monthly_amount && (
+                            <p>💰 R$ {Number(s.monthly_amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} / mês • vence dia {s.due_day}</p>
+                          )}
+                          <p>📅 Início: {new Date(s.start_date).toLocaleDateString("pt-BR")}</p>
+                        </div>
+                        {s.is_minor && (
+                          <div className="mt-2 pt-2 border-t border-border text-xs text-muted-foreground space-y-0.5">
+                            <p className="font-medium text-foreground">Responsável</p>
+                            <p>{s.guardian_name} • CPF {s.guardian_document}</p>
+                            <Badge variant={s.guardian_authorized ? "default" : "destructive"} className="text-[10px] mt-1">
+                              {s.guardian_authorized ? "Autorizado" : "Sem autorização"}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : <div className="text-center py-8 text-muted-foreground text-sm">Nenhum cadastro de assinatura ainda</div>}
+              </div>
+            )}
+
             {activeTab === "aulas" && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
