@@ -42,6 +42,7 @@ const generatePixPayload = (amount: number) => {
 
 const Donations = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
