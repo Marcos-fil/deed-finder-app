@@ -127,7 +127,6 @@ const Profile = () => {
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
             { icon: Bell, label: "Notificações", action: () => {} },
-            { icon: Users, label: "Conta dos Pais", action: () => navigate("/responsavel") },
             ...(isAdmin ? [
               { icon: Shield, label: "Painel Admin", action: () => navigate("/admin") },
               { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
