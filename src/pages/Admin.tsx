@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 
-type AdminTab = "alunos" | "doacoes" | "aulas" | "presencas" | "responsaveis" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
