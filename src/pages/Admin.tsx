@@ -148,6 +148,7 @@ const Admin = () => {
   const tabs = [
     { id: "alunos" as AdminTab, label: "Alunos", icon: Users, count: enrollments.length },
     { id: "doacoes" as AdminTab, label: "Doações", icon: DollarSign, count: donations.length },
+    { id: "assinaturas" as AdminTab, label: "Assinaturas", icon: CalendarDays, count: subscriptions.length },
     { id: "aulas" as AdminTab, label: "Aulas", icon: BookOpen, count: classes.length },
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
     { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
