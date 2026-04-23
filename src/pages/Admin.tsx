@@ -58,13 +58,14 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
       supabase.from("profiles" as any).select("*"),
       supabase.from("class_attendance" as any).select("*").order("confirmed_at", { ascending: false }),
       supabase.from("parent_child_links" as any).select("*"),
+      supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -73,6 +74,7 @@ const Admin = () => {
     setUsers((usersRes.data as any[]) || []);
     setAttendance((attendanceRes.data as any[]) || []);
     setParentLinks((linksRes.data as any[]) || []);
+    setSubscriptions((subsRes.data as any[]) || []);
     setLoading(false);
   };
 
