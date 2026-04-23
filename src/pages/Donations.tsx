@@ -54,6 +54,8 @@ const Donations = () => {
   const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberBirthDate, setSubscriberBirthDate] = useState("");
+  const [subscriberPhone, setSubscriberPhone] = useState("");
+  const [subscriberAddress, setSubscriberAddress] = useState("");
   const [guardianName, setGuardianName] = useState("");
   const [guardianDocument, setGuardianDocument] = useState("");
   const [guardianAuthorized, setGuardianAuthorized] = useState(false);
