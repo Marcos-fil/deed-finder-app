@@ -116,7 +116,31 @@ const Donations = () => {
   };
 
   const handleJoinSubscription = () => {
+    setShowSubscriptionForm(true);
+    setShowSubscriptionPix(false);
+  };
+
+  const handleConfirmSubscriptionRegistration = () => {
+    if (!subscriberName.trim()) {
+      toast({ title: "Informe seu nome", description: "Preencha o nome completo." });
+      return;
+    }
+    if (!subscriberBirthDate || subscriberAge === null) {
+      toast({ title: "Informe a data de nascimento", description: "Digite uma data válida." });
+      return;
+    }
+    if (isMinor) {
+      if (!guardianName.trim() || !guardianDocument.trim() || !guardianAuthorized) {
+        toast({
+          title: "Autorização necessária",
+          description: "Para menores de 18 anos é preciso preencher os dados do responsável e confirmar a autorização.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
     setSubscriptionJoined(true);
+    setShowSubscriptionForm(false);
     setSubscriptionStartDate(new Date());
     setSelectedMonth(currentMonth);
     setShowSubscriptionPix(false);
