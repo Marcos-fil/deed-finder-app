@@ -51,6 +51,26 @@ const Donations = () => {
   const [subscriptionJoined, setSubscriptionJoined] = useState(false);
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<Date | null>(null);
   const [showSubscriptionPix, setShowSubscriptionPix] = useState(false);
+  const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
+  const [subscriberName, setSubscriberName] = useState("");
+  const [subscriberBirthDate, setSubscriberBirthDate] = useState("");
+  const [guardianName, setGuardianName] = useState("");
+  const [guardianDocument, setGuardianDocument] = useState("");
+  const [guardianAuthorized, setGuardianAuthorized] = useState(false);
+
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return null;
+    const birth = new Date(birthDate);
+    if (isNaN(birth.getTime())) return null;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
+  };
+
+  const subscriberAge = calculateAge(subscriberBirthDate);
+  const isMinor = subscriberAge !== null && subscriberAge < 18;
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
