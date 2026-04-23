@@ -54,6 +54,8 @@ const Donations = () => {
   const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberBirthDate, setSubscriberBirthDate] = useState("");
+  const [subscriberPhone, setSubscriberPhone] = useState("");
+  const [subscriberAddress, setSubscriberAddress] = useState("");
   const [guardianName, setGuardianName] = useState("");
   const [guardianDocument, setGuardianDocument] = useState("");
   const [guardianAuthorized, setGuardianAuthorized] = useState(false);
@@ -127,6 +129,14 @@ const Donations = () => {
     }
     if (!subscriberBirthDate || subscriberAge === null) {
       toast({ title: "Informe a data de nascimento", description: "Digite uma data válida." });
+      return;
+    }
+    if (!subscriberPhone.trim()) {
+      toast({ title: "Informe o telefone", description: "Preencha um número de telefone válido." });
+      return;
+    }
+    if (!subscriberAddress.trim()) {
+      toast({ title: "Informe o endereço", description: "Preencha seu endereço completo." });
       return;
     }
     if (isMinor) {
@@ -278,6 +288,28 @@ const Donations = () => {
                       </div>
                     </div>
                   )}
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Telefone</label>
+                    <input
+                      type="tel"
+                      value={subscriberPhone}
+                      onChange={(e) => setSubscriberPhone(e.target.value)}
+                      placeholder="(11) 90000-0000"
+                      maxLength={20}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Endereço</label>
+                    <textarea
+                      value={subscriberAddress}
+                      onChange={(e) => setSubscriberAddress(e.target.value)}
+                      placeholder="Rua, número, bairro, cidade - UF"
+                      maxLength={250}
+                      rows={2}
+                      className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                    />
+                  </div>
                 </div>
 
                 {isMinor && (
