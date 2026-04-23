@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays } from "lucide-react";
+import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
