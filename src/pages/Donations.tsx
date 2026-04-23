@@ -6,6 +6,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { toEmbedUrl } from "@/lib/siteContent";
 
 const donationOptions = [
   { amount: 25, description: "Ajuda básica mensal", impact: "Alimenta 1 criança por 1 semana" },
@@ -43,6 +45,7 @@ const generatePixPayload = (amount: number) => {
 const Donations = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { get } = useSiteContent();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
@@ -207,8 +210,8 @@ const Donations = () => {
             <Heart className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-primary-foreground">Doe Agora</h1>
-            <p className="text-primary-foreground/70 text-sm">Cada gesto faz a diferença</p>
+            <h1 className="font-display text-2xl font-bold text-primary-foreground">{get("donations_header", "title")}</h1>
+            <p className="text-primary-foreground/70 text-sm">{get("donations_header", "subtitle")}</p>
           </div>
         </div>
       </div>
@@ -262,14 +265,26 @@ const Donations = () => {
                   <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                     <CalendarDays className="h-5 w-5 text-primary" />
                   </div>
-                  <h2 className="font-display text-lg font-semibold text-foreground">Programa de assinatura</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Uma contribuição mensal livre para manter as ações da ONG acontecendo com previsibilidade.</p>
+                  <h2 className="font-display text-lg font-semibold text-foreground">{get("donations_subscription_intro", "title")}</h2>
+                  <p className="text-sm text-muted-foreground mt-1">{get("donations_subscription_intro", "description")}</p>
                 </div>
                 <div className="bg-card rounded-xl p-4 border border-border">
-                  <div className="aspect-video rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground">
-                    <PlayCircle className="h-10 w-10 mb-2" />
-                    <p className="text-sm font-medium">Vídeo explicativo em breve</p>
-                  </div>
+                  {get("donations_subscription_intro", "video_url") ? (
+                    <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+                      <iframe
+                        className="absolute inset-0 w-full h-full rounded-xl"
+                        src={toEmbedUrl(get("donations_subscription_intro", "video_url"))}
+                        title="Vídeo explicativo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-video rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground">
+                      <PlayCircle className="h-10 w-10 mb-2" />
+                      <p className="text-sm font-medium">{get("donations_subscription_intro", "video_placeholder")}</p>
+                    </div>
+                  )}
                 </div>
                 <Button className="w-full h-12 gradient-primary text-primary-foreground" onClick={handleJoinSubscription}>
                   Quero participar da assinatura

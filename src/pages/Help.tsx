@@ -1,5 +1,6 @@
 import { ArrowLeft, Phone, Mail, Clock, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const schedule = [
   { day: "Segunda-feira", hours: "09:00 – 17:00" },
@@ -13,6 +14,11 @@ const schedule = [
 
 const Help = () => {
   const navigate = useNavigate();
+  const { get } = useSiteContent();
+  const phone = get("help_contact", "phone");
+  const phoneLink = get("help_contact", "phone_link");
+  const email = get("help_contact", "email");
+  const address = get("help_contact", "address");
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -26,35 +32,26 @@ const Help = () => {
       </div>
 
       <div className="px-4 mt-4 space-y-4">
-        {/* Telefone */}
-        <a
-          href="tel:+5511941289195"
-          className="bg-card rounded-xl p-4 border border-border flex items-center gap-4"
-        >
+        <a href={phoneLink} className="bg-card rounded-xl p-4 border border-border flex items-center gap-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <Phone className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h3 className="font-semibold text-sm text-foreground">Telefone</h3>
-            <p className="text-sm text-muted-foreground">(11) 94128-9195</p>
+            <p className="text-sm text-muted-foreground">{phone}</p>
           </div>
         </a>
 
-        {/* Email */}
-        <a
-          href="mailto:missaovida@missaovida.org.br"
-          className="bg-card rounded-xl p-4 border border-border flex items-center gap-4"
-        >
+        <a href={`mailto:${email}`} className="bg-card rounded-xl p-4 border border-border flex items-center gap-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <Mail className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h3 className="font-semibold text-sm text-foreground">E-mail</h3>
-            <p className="text-sm text-muted-foreground">missaovida@missaovida.org.br</p>
+            <p className="text-sm text-muted-foreground">{email}</p>
           </div>
         </a>
 
-        {/* Horário */}
         <div className="bg-card rounded-xl p-4 border border-border">
           <div className="flex items-center gap-3 mb-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -74,14 +71,13 @@ const Help = () => {
           </div>
         </div>
 
-        {/* Endereço */}
         <div className="bg-card rounded-xl p-4 border border-border flex items-center gap-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <MapPin className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h3 className="font-semibold text-sm text-foreground">Endereço</h3>
-            <p className="text-sm text-muted-foreground">R. Jaci, 314 - Cidade Ariston Estela Azevedo, Carapicuíba - SP, 06396-190</p>
+            <p className="text-sm text-muted-foreground">{address}</p>
           </div>
         </div>
       </div>

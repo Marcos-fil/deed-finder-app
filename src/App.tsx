@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { SiteContentProvider } from "@/hooks/useSiteContent";
 import SplashScreen from "@/components/SplashScreen";
 import BottomNav from "@/components/BottomNav";
 import Index from "./pages/Index";
@@ -82,7 +83,9 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <AppRoutes />
+            <SiteContentProvider>
+              <AppRoutes />
+            </SiteContentProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
