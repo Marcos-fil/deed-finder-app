@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2 } from "lucide-react";
+import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 
-type AdminTab = "alunos" | "doacoes" | "aulas" | "presencas" | "responsaveis" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
@@ -44,6 +44,7 @@ const Admin = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [parentLinks, setParentLinks] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showClassForm, setShowClassForm] = useState(false);
@@ -57,13 +58,14 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
       supabase.from("profiles" as any).select("*"),
       supabase.from("class_attendance" as any).select("*").order("confirmed_at", { ascending: false }),
       supabase.from("parent_child_links" as any).select("*"),
+      supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -72,6 +74,7 @@ const Admin = () => {
     setUsers((usersRes.data as any[]) || []);
     setAttendance((attendanceRes.data as any[]) || []);
     setParentLinks((linksRes.data as any[]) || []);
+    setSubscriptions((subsRes.data as any[]) || []);
     setLoading(false);
   };
 
@@ -145,6 +148,7 @@ const Admin = () => {
   const tabs = [
     { id: "alunos" as AdminTab, label: "Alunos", icon: Users, count: enrollments.length },
     { id: "doacoes" as AdminTab, label: "Doações", icon: DollarSign, count: donations.length },
+    { id: "assinaturas" as AdminTab, label: "Assinaturas", icon: CalendarDays, count: subscriptions.length },
     { id: "aulas" as AdminTab, label: "Aulas", icon: BookOpen, count: classes.length },
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
     { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
@@ -279,6 +283,56 @@ const Admin = () => {
                     </div>
                   </div>
                 ) : <div className="text-center py-8 text-muted-foreground text-sm">Nenhuma doação registrada</div>}
+              </div>
+            )}
+
+            {activeTab === "assinaturas" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-card rounded-xl p-4 border border-border">
+                    <p className="text-xs text-muted-foreground">Cadastros</p>
+                    <p className="text-2xl font-bold text-primary">{subscriptions.length}</p>
+                  </div>
+                  <div className="bg-card rounded-xl p-4 border border-border">
+                    <p className="text-xs text-muted-foreground">Menores de 18</p>
+                    <p className="text-2xl font-bold text-foreground">{subscriptions.filter((s: any) => s.is_minor).length}</p>
+                  </div>
+                </div>
+
+                {subscriptions.length > 0 ? (
+                  <div className="space-y-3">
+                    {subscriptions.map((s: any) => (
+                      <div key={s.id} className="bg-card rounded-xl border border-border p-4 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="font-semibold text-sm text-foreground">{s.subscriber_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {s.age} anos • Nasc. {new Date(s.birth_date).toLocaleDateString("pt-BR")}
+                            </p>
+                          </div>
+                          {s.is_minor && <Badge variant="secondary" className="text-[10px]">Menor</Badge>}
+                        </div>
+                        <div className="text-xs text-muted-foreground space-y-0.5">
+                          <p>📞 {s.phone}</p>
+                          <p>📍 {s.address}</p>
+                          {s.monthly_amount && (
+                            <p>💰 R$ {Number(s.monthly_amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} / mês • vence dia {s.due_day}</p>
+                          )}
+                          <p>📅 Início: {new Date(s.start_date).toLocaleDateString("pt-BR")}</p>
+                        </div>
+                        {s.is_minor && (
+                          <div className="mt-2 pt-2 border-t border-border text-xs text-muted-foreground space-y-0.5">
+                            <p className="font-medium text-foreground">Responsável</p>
+                            <p>{s.guardian_name} • CPF {s.guardian_document}</p>
+                            <Badge variant={s.guardian_authorized ? "default" : "destructive"} className="text-[10px] mt-1">
+                              {s.guardian_authorized ? "Autorizado" : "Sem autorização"}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : <div className="text-center py-8 text-muted-foreground text-sm">Nenhum cadastro de assinatura ainda</div>}
               </div>
             )}
 

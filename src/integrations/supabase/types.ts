@@ -187,6 +187,63 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_registrations: {
+        Row: {
+          address: string
+          age: number
+          birth_date: string
+          created_at: string
+          due_day: number
+          guardian_authorized: boolean
+          guardian_document: string | null
+          guardian_name: string | null
+          id: string
+          is_minor: boolean
+          monthly_amount: number | null
+          phone: string
+          start_date: string
+          subscriber_name: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          age: number
+          birth_date: string
+          created_at?: string
+          due_day: number
+          guardian_authorized?: boolean
+          guardian_document?: string | null
+          guardian_name?: string | null
+          id?: string
+          is_minor?: boolean
+          monthly_amount?: number | null
+          phone: string
+          start_date?: string
+          subscriber_name: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          age?: number
+          birth_date?: string
+          created_at?: string
+          due_day?: number
+          guardian_authorized?: boolean
+          guardian_document?: string | null
+          guardian_name?: string | null
+          id?: string
+          is_minor?: boolean
+          monthly_amount?: number | null
+          phone?: string
+          start_date?: string
+          subscriber_name?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

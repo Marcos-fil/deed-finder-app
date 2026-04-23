@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const donationOptions = [
   { amount: 25, description: "Ajuda básica mensal", impact: "Alimenta 1 criança por 1 semana" },
@@ -40,6 +42,7 @@ const generatePixPayload = (amount: number) => {
 
 const Donations = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
@@ -122,7 +125,7 @@ const Donations = () => {
     setShowSubscriptionPix(false);
   };
 
-  const handleConfirmSubscriptionRegistration = () => {
+  const handleConfirmSubscriptionRegistration = async () => {
     if (!subscriberName.trim()) {
       toast({ title: "Informe seu nome", description: "Preencha o nome completo." });
       return;
@@ -149,9 +152,33 @@ const Donations = () => {
         return;
       }
     }
+
+    const startDate = new Date();
+    const { error } = await supabase.from("subscription_registrations" as any).insert({
+      user_id: user?.id ?? null,
+      subscriber_name: subscriberName.trim(),
+      birth_date: subscriberBirthDate,
+      age: subscriberAge,
+      phone: subscriberPhone.trim(),
+      address: subscriberAddress.trim(),
+      monthly_amount: subscriptionValue > 0 ? subscriptionValue : null,
+      start_date: startDate.toISOString().slice(0, 10),
+      due_day: startDate.getDate(),
+      is_minor: isMinor,
+      guardian_name: isMinor ? guardianName.trim() : null,
+      guardian_document: isMinor ? guardianDocument.trim() : null,
+      guardian_authorized: isMinor ? guardianAuthorized : false,
+    } as any);
+
+    if (error) {
+      toast({ title: "Erro ao salvar cadastro", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    toast({ title: "Cadastro enviado!", description: "Seus dados foram registrados com segurança." });
     setSubscriptionJoined(true);
     setShowSubscriptionForm(false);
-    setSubscriptionStartDate(new Date());
+    setSubscriptionStartDate(startDate);
     setSelectedMonth(currentMonth);
     setShowSubscriptionPix(false);
   };
