@@ -131,6 +131,14 @@ const Donations = () => {
       toast({ title: "Informe a data de nascimento", description: "Digite uma data válida." });
       return;
     }
+    if (!subscriberPhone.trim()) {
+      toast({ title: "Informe o telefone", description: "Preencha um número de telefone válido." });
+      return;
+    }
+    if (!subscriberAddress.trim()) {
+      toast({ title: "Informe o endereço", description: "Preencha seu endereço completo." });
+      return;
+    }
     if (isMinor) {
       if (!guardianName.trim() || !guardianDocument.trim() || !guardianAuthorized) {
         toast({
