@@ -44,6 +44,7 @@ const Admin = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [parentLinks, setParentLinks] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showClassForm, setShowClassForm] = useState(false);
