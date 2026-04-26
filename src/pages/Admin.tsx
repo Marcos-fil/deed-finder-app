@@ -52,6 +52,7 @@ const Admin = () => {
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [classForm, setClassForm] = useState({ category: "", day_of_week: "", time_slot: "", max_capacity: "30" });
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
+  const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
 
   useEffect(() => {
     loadData();
@@ -75,7 +76,9 @@ const Admin = () => {
     setUsers((usersRes.data as any[]) || []);
     setAttendance((attendanceRes.data as any[]) || []);
     setParentLinks((linksRes.data as any[]) || []);
-    setSubscriptions((subsRes.data as any[]) || []);
+    const subscriptionData = (subsRes.data as any[]) || [];
+    setSubscriptions(subscriptionData);
+    setSubscriptionAmounts(Object.fromEntries(subscriptionData.map((s: any) => [s.id, s.monthly_amount ? String(s.monthly_amount) : ""])));
     setLoading(false);
   };
 
@@ -142,6 +145,21 @@ const Admin = () => {
       toast({ title: "Responsável vinculado ao aluno" });
       setShowLinkForm(false);
       setLinkForm({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
+      loadData();
+    }
+  };
+
+  const handleUpdateSubscriptionAmount = async (id: string) => {
+    const amount = Number(subscriptionAmounts[id]);
+    if (!amount || amount <= 0) {
+      toast({ title: "Informe um valor válido", variant: "destructive" });
+      return;
+    }
+
+    const { error } = await supabase.from("subscription_registrations" as any).update({ monthly_amount: amount } as any).eq("id", id);
+    if (error) toast({ title: "Erro ao atualizar valor", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Valor mensal atualizado" });
       loadData();
     }
   };
@@ -317,9 +335,21 @@ const Admin = () => {
                         <div className="text-xs text-muted-foreground space-y-0.5">
                           <p>📞 {s.phone}</p>
                           <p>📍 {s.address}</p>
-                          {s.monthly_amount && (
-                            <p>💰 R$ {Number(s.monthly_amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} / mês • vence dia {s.due_day}</p>
-                          )}
+                          <div className="pt-2 space-y-2">
+                            <Label className="text-xs text-foreground">Valor mensal autorizado</Label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                min="1"
+                                step="0.01"
+                                value={subscriptionAmounts[s.id] || ""}
+                                onChange={(e) => setSubscriptionAmounts((current) => ({ ...current, [s.id]: e.target.value }))}
+                                className="h-9 text-sm"
+                              />
+                              <Button size="sm" onClick={() => handleUpdateSubscriptionAmount(s.id)}>Salvar</Button>
+                            </div>
+                            <p>Vence dia {s.due_day}</p>
+                          </div>
                           <p>📅 Início: {new Date(s.start_date).toLocaleDateString("pt-BR")}</p>
                         </div>
                         {s.is_minor && (

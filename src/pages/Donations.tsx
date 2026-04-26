@@ -145,6 +145,10 @@ const Donations = () => {
       toast({ title: "Informe o endereço", description: "Preencha seu endereço completo." });
       return;
     }
+    if (subscriptionValue <= 0) {
+      toast({ title: "Informe o valor mensal", description: "Digite o valor inicial da assinatura." });
+      return;
+    }
     if (isMinor) {
       if (!guardianName.trim() || !guardianDocument.trim() || !guardianAuthorized) {
         toast({
@@ -164,7 +168,7 @@ const Donations = () => {
       age: subscriberAge,
       phone: subscriberPhone.trim(),
       address: subscriberAddress.trim(),
-      monthly_amount: subscriptionValue > 0 ? subscriptionValue : null,
+      monthly_amount: subscriptionValue,
       start_date: startDate.toISOString().slice(0, 10),
       due_day: startDate.getDate(),
       is_minor: isMinor,
@@ -352,6 +356,22 @@ const Donations = () => {
                       className="w-full bg-muted rounded-lg px-3 py-2.5 text-foreground border-0 outline-none focus:ring-2 focus:ring-primary/30 resize-none"
                     />
                   </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Valor mensal inicial</label>
+                    <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-primary/30">
+                      <span className="text-muted-foreground font-medium">R$</span>
+                      <input
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        placeholder="0,00"
+                        value={subscriptionAmount}
+                        onChange={(e) => setSubscriptionAmount(e.target.value)}
+                        className="flex-1 bg-transparent text-foreground font-semibold placeholder:text-muted-foreground/50 border-0 outline-none"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">Depois do cadastro, alterações no valor mensal só poderão ser feitas pela administração.</p>
+                  </div>
                 </div>
 
                 {isMinor && (
@@ -403,9 +423,6 @@ const Donations = () => {
                 </Button>
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {getSubscriptionDueDate(selectedMonth).toLocaleDateString("pt-BR")}</p>
-                  <p className="font-display text-2xl font-bold text-primary">
-                    R$ {subscriptionValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl">
                   <QRCodeSVG value={subscriptionPayload} size={180} level="M" />
@@ -416,21 +433,7 @@ const Donations = () => {
               </div>
             ) : (
               <>
-                <div className="bg-card rounded-xl p-4 border border-border">
-                  <label className="text-sm font-medium text-foreground mb-2 block">Valor mensal</label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground font-medium">R$</span>
-                    <input
-                      type="number"
-                      min="1"
-                      placeholder="0,00"
-                      value={subscriptionAmount}
-                      onChange={(e) => setSubscriptionAmount(e.target.value)}
-                      className="flex-1 bg-muted rounded-lg px-3 py-2.5 text-foreground text-lg font-semibold placeholder:text-muted-foreground/50 border-0 outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">O vencimento mensal será sempre no dia {subscriptionStartDate?.getDate()}.</p>
-                </div>
+                <p className="text-xs text-muted-foreground px-1">O vencimento mensal será sempre no dia {subscriptionStartDate?.getDate()}.</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {subscriptionMonths
                     .filter((month) => !subscriptionStartDate || month.index >= subscriptionStartDate.getMonth())
