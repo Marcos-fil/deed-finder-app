@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import ContentManager from "@/components/ContentManager";
+import SponsorshipAdmin from "@/components/SponsorshipAdmin";
 
 type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "apadrinhar" | "seguranca";
 
