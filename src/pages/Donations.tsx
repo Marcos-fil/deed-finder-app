@@ -1,5 +1,6 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle, Sparkles } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
+import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
