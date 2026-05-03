@@ -51,7 +51,7 @@ const Donations = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura">("pix");
+  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura" | "apadrinhar">("pix");
   const [subscriptionAmount, setSubscriptionAmount] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [paidMonths, setPaidMonths] = useState<number[]>([]);
