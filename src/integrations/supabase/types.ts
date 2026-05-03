@@ -211,6 +211,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsorship_children: {
+        Row: {
+          amount: number
+          cause: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          payment_link: string
+          sponsored_at: string | null
+          sponsored_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          cause: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          payment_link: string
+          sponsored_at?: string | null
+          sponsored_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          cause?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          payment_link?: string
+          sponsored_at?: string | null
+          sponsored_by?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscription_registrations: {
         Row: {
           address: string
