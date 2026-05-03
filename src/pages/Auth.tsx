@@ -37,10 +37,10 @@ const Auth = () => {
         });
         if (error) throw error;
         toast({
-          title: "Conta criada!",
-          description: "Você já pode acessar o app.",
+          title: "Confirme seu email",
+          description: "Enviamos um link de confirmação para " + email + ". Acesse seu Gmail para ativar a conta.",
         });
-        navigate("/");
+        setIsLogin(true);
       }
     } catch (error: any) {
       toast({
