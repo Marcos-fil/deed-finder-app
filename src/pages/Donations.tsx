@@ -1,5 +1,6 @@
-import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle } from "lucide-react";
+import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation, ExternalLink, CalendarDays, PlayCircle, Sparkles } from "lucide-react";
 import DonationCard from "@/components/DonationCard";
+import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
@@ -50,7 +51,7 @@ const Donations = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura">("pix");
+  const [activeTab, setActiveTab] = useState<"pix" | "cupom" | "assinatura" | "apadrinhar">("pix");
   const [subscriptionAmount, setSubscriptionAmount] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [paidMonths, setPaidMonths] = useState<number[]>([]);
@@ -221,19 +222,26 @@ const Donations = () => {
       </div>
 
       <div className="px-4 -mt-4 relative z-10">
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-2">
           <button onClick={() => setActiveTab("pix")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "pix" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <QrCode className="h-4 w-4 inline mr-1.5 -mt-0.5" /> PIX
           </button>
           <button onClick={() => setActiveTab("assinatura")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "assinatura" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <CalendarDays className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Assinatura
           </button>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <button onClick={() => setActiveTab("apadrinhar")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "apadrinhar" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
+            <Sparkles className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Apadrinhar
+          </button>
           <button onClick={() => setActiveTab("cupom")} className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === "cupom" ? "bg-primary text-primary-foreground shadow-md" : "bg-card text-muted-foreground border border-border"}`}>
             <ReceiptText className="h-4 w-4 inline mr-1.5 -mt-0.5" /> Cupom fiscal
           </button>
         </div>
 
-        {activeTab === "cupom" ? (
+        {activeTab === "apadrinhar" ? (
+          <SponsorshipSection />
+        ) : activeTab === "cupom" ? (
           <div className="space-y-4 animate-fade-in-up">
             <div className="bg-card rounded-xl p-4 border border-border">
               <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-3">

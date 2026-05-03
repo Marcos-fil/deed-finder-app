@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText } from "lucide-react";
+import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import ContentManager from "@/components/ContentManager";
+import SponsorshipAdmin from "@/components/SponsorshipAdmin";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "apadrinhar" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
@@ -172,6 +173,7 @@ const Admin = () => {
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
     { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
     { id: "conteudo" as AdminTab, label: "Conteúdo", icon: FileText, count: 0 },
+    { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
 
@@ -427,6 +429,8 @@ const Admin = () => {
             )}
 
             {activeTab === "conteudo" && <ContentManager />}
+
+            {activeTab === "apadrinhar" && <SponsorshipAdmin />}
 
             {activeTab === "seguranca" && (
               <div className="space-y-4">
