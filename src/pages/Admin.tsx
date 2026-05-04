@@ -115,9 +115,9 @@ const Admin = () => {
     }
   };
 
-  const handleToggleAttendance = async (enrollment: any) => {
-    const today = new Date().toISOString().slice(0, 10);
-    const existing = attendance.find((a) => a.enrollment_id === enrollment.id && a.class_date === today);
+  const handleToggleAttendance = async (enrollment: any, date?: string) => {
+    const targetDate = date || new Date().toISOString().slice(0, 10);
+    const existing = attendance.find((a) => a.enrollment_id === enrollment.id && a.class_date === targetDate);
 
     const { error } = existing
       ? await supabase.from("class_attendance" as any).delete().eq("id", existing.id)
@@ -126,7 +126,7 @@ const Admin = () => {
           class_id: enrollment.class_id,
           student_user_id: enrollment.user_id,
           confirmed_by: user!.id,
-          class_date: today,
+          class_date: targetDate,
         } as any);
 
     if (error) toast({ title: "Erro ao atualizar presença", description: error.message, variant: "destructive" });
