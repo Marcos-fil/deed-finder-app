@@ -54,6 +54,7 @@ const Admin = () => {
   const [classForm, setClassForm] = useState({ category: "", day_of_week: "", time_slot: "", max_capacity: "30" });
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
   const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
+  const [attendanceDates, setAttendanceDates] = useState<Record<string, string>>({});
 
   useEffect(() => {
     loadData();
@@ -114,9 +115,9 @@ const Admin = () => {
     }
   };
 
-  const handleToggleAttendance = async (enrollment: any) => {
-    const today = new Date().toISOString().slice(0, 10);
-    const existing = attendance.find((a) => a.enrollment_id === enrollment.id && a.class_date === today);
+  const handleToggleAttendance = async (enrollment: any, date?: string) => {
+    const targetDate = date || new Date().toISOString().slice(0, 10);
+    const existing = attendance.find((a) => a.enrollment_id === enrollment.id && a.class_date === targetDate);
 
     const { error } = existing
       ? await supabase.from("class_attendance" as any).delete().eq("id", existing.id)
@@ -125,7 +126,7 @@ const Admin = () => {
           class_id: enrollment.class_id,
           student_user_id: enrollment.user_id,
           confirmed_by: user!.id,
-          class_date: today,
+          class_date: targetDate,
         } as any);
 
     if (error) toast({ title: "Erro ao atualizar presença", description: error.message, variant: "destructive" });
@@ -406,17 +407,60 @@ const Admin = () => {
 
             {activeTab === "presencas" && (
               <div className="space-y-4">
-                <div className="bg-card rounded-xl p-4 border border-border"><h3 className="font-semibold text-foreground text-sm mb-1">Presenças de Hoje</h3><p className="text-3xl font-bold text-primary">{attendance.filter((a) => a.class_date === today).length}</p></div>
-                {enrollments.map((e: any) => {
-                  const present = attendance.some((a) => a.enrollment_id === e.id && a.class_date === today);
-                  const cls = e.classes;
+                <div className="bg-card rounded-xl p-4 border border-border">
+                  <h3 className="font-semibold text-foreground text-sm mb-1">Presenças de Hoje</h3>
+                  <p className="text-3xl font-bold text-primary">{attendance.filter((a) => a.class_date === today).length}</p>
+                </div>
+
+                {Object.entries(getEnrollmentsByClass()).map(([className, students]) => {
+                  const classId = students[0]?.class_id;
+                  const selectedDate = attendanceDates[classId] || today;
                   return (
-                    <div key={e.id} className="bg-card rounded-xl p-4 border border-border flex items-center justify-between gap-3">
-                      <div><p className="text-sm font-medium text-foreground">{getUserName(e.user_id)}</p><p className="text-xs text-muted-foreground">{cls ? `${CATEGORY_LABELS[cls.category] || cls.category} • ${DAY_LABELS[cls.day_of_week] || cls.day_of_week} ${cls.time_slot}` : "Aula"}</p></div>
-                      <Button size="sm" variant={present ? "default" : "outline"} onClick={() => handleToggleAttendance(e)} className="gap-1.5"><UserCheck className="h-4 w-4" />{present ? "Presente" : "Confirmar"}</Button>
+                    <div key={className} className="bg-card rounded-xl border border-border overflow-hidden">
+                      <div className="p-4 border-b border-border bg-muted/30 space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="font-semibold text-foreground text-sm">{className}</h3>
+                          <Badge variant="secondary" className="text-xs">{students.length} alunos</Badge>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Label className="text-xs text-muted-foreground whitespace-nowrap">Data da aula:</Label>
+                          <Input
+                            type="date"
+                            value={selectedDate}
+                            onChange={(e) => setAttendanceDates((curr) => ({ ...curr, [classId]: e.target.value }))}
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="divide-y divide-border">
+                        {students.map((s: any) => {
+                          const present = attendance.some((a) => a.enrollment_id === s.id && a.class_date === selectedDate);
+                          return (
+                            <div key={s.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-medium text-foreground">{getUserName(s.user_id)}</p>
+                                <p className="text-xs text-muted-foreground">Inscrito em {new Date(s.enrolled_at).toLocaleDateString("pt-BR")}</p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant={present ? "default" : "outline"}
+                                onClick={() => handleToggleAttendance(s, selectedDate)}
+                                className="gap-1.5"
+                              >
+                                <UserCheck className="h-4 w-4" />
+                                {present ? "Presente" : "Confirmar"}
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   );
                 })}
+
+                {enrollments.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground text-sm">Nenhuma matrícula encontrada</div>
+                )}
               </div>
             )}
 
