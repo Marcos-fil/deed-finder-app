@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText, Sparkles } from "lucide-react";
+import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText, Sparkles, Newspaper } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/useAuth";
 import ContentManager from "@/components/ContentManager";
 import SponsorshipAdmin from "@/components/SponsorshipAdmin";
+import NewsAdmin from "@/components/NewsAdmin";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "apadrinhar" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
@@ -174,6 +175,7 @@ const Admin = () => {
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
     { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
     { id: "conteudo" as AdminTab, label: "Conteúdo", icon: FileText, count: 0 },
+    { id: "noticias" as AdminTab, label: "Notícias", icon: Newspaper, count: 0 },
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
@@ -473,6 +475,8 @@ const Admin = () => {
             )}
 
             {activeTab === "conteudo" && <ContentManager />}
+
+            {activeTab === "noticias" && <NewsAdmin />}
 
             {activeTab === "apadrinhar" && <SponsorshipAdmin />}
 

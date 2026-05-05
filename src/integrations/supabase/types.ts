@@ -133,6 +133,45 @@ export type Database = {
         }
         Relationships: []
       }
+      news: {
+        Row: {
+          content: string
+          cover_image: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          link_label: string | null
+          link_url: string | null
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       parent_child_links: {
         Row: {
           child_user_id: string
