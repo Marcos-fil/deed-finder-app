@@ -476,6 +476,8 @@ const Admin = () => {
 
             {activeTab === "conteudo" && <ContentManager />}
 
+            {activeTab === "noticias" && <NewsAdmin />}
+
             {activeTab === "apadrinhar" && <SponsorshipAdmin />}
 
             {activeTab === "seguranca" && (
