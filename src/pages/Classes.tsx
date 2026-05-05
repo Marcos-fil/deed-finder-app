@@ -349,7 +349,11 @@ const Classes = () => {
                       </div>
                     </div>
 
-                    {isEnrolled ? (
+                    {isAdmin ? (
+                      <span className="text-xs text-muted-foreground italic">
+                        Admins não se inscrevem
+                      </span>
+                    ) : isEnrolled ? (
                       <Button
                         variant="outline"
                         size="sm"
