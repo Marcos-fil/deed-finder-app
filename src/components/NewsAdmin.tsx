@@ -31,6 +31,7 @@ const NewsAdmin = () => {
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState(empty);
   const [showForm, setShowForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const load = async () => {
     setLoading(true);
