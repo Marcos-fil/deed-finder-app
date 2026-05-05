@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2, MapPin, Navigation, ExternalLink, XCircle, BookOpen, Timer } from "lucide-react";
