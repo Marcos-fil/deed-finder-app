@@ -89,6 +89,22 @@ const NewsAdmin = () => {
     else { toast({ title: "Notícia excluída" }); load(); }
   };
 
+  const handleUpload = async (file: File) => {
+    if (!user) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("news-images").upload(path, file, { upsert: false });
+    if (error) {
+      toast({ title: "Erro ao enviar imagem", description: error.message, variant: "destructive" });
+    } else {
+      const { data } = supabase.storage.from("news-images").getPublicUrl(path);
+      setForm((f) => ({ ...f, cover_image: data.publicUrl }));
+      toast({ title: "Imagem enviada!" });
+    }
+    setUploading(false);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
