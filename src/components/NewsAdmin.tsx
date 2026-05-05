@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Trash2, Pencil, ExternalLink, Save, X } from "lucide-react";
+import { Plus, Trash2, Pencil, ExternalLink, Save, X, Upload, Loader2 } from "lucide-react";
 
 type NewsItem = {
   id: string;
