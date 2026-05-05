@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, GraduationCap, Dribbble, Shield, Monitor, Mic, Calendar, Clock, Users, CheckCircle2, MapPin, Navigation, ExternalLink, XCircle, BookOpen, Timer } from "lucide-react";
@@ -83,6 +84,7 @@ const Classes = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("categorias");
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -347,7 +349,11 @@ const Classes = () => {
                       </div>
                     </div>
 
-                    {isEnrolled ? (
+                    {isAdmin ? (
+                      <span className="text-xs text-muted-foreground italic">
+                        Admins não se inscrevem
+                      </span>
+                    ) : isEnrolled ? (
                       <Button
                         variant="outline"
                         size="sm"
