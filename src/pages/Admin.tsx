@@ -175,6 +175,7 @@ const Admin = () => {
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
     { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
     { id: "conteudo" as AdminTab, label: "Conteúdo", icon: FileText, count: 0 },
+    { id: "noticias" as AdminTab, label: "Notícias", icon: Newspaper, count: 0 },
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
