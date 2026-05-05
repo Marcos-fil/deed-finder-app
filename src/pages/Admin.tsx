@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/useAuth";
 import ContentManager from "@/components/ContentManager";
 import SponsorshipAdmin from "@/components/SponsorshipAdmin";
+import NewsAdmin from "@/components/NewsAdmin";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "apadrinhar" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
