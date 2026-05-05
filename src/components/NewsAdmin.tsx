@@ -131,9 +131,30 @@ const NewsAdmin = () => {
             <Textarea rows={4} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-sm">Imagem de capa (URL)</Label>
-            <Input value={form.cover_image} onChange={(e) => setForm({ ...form, cover_image: e.target.value })} placeholder="https://..." />
-            {form.cover_image && <img src={form.cover_image} alt="Preview" className="mt-2 max-h-32 rounded-lg border border-border object-cover" />}
+            <Label className="text-sm">Imagem de capa</Label>
+            <div className="flex items-center gap-2">
+              <label className="flex-1 cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleUpload(f);
+                  }}
+                />
+                <div className="flex items-center justify-center gap-2 h-10 rounded-md border border-dashed border-input bg-background text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploading ? "Enviando..." : form.cover_image ? "Trocar imagem" : "Selecionar imagem"}
+                </div>
+              </label>
+              {form.cover_image && (
+                <Button variant="ghost" size="icon" type="button" onClick={() => setForm({ ...form, cover_image: "" })}>
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            {form.cover_image && <img src={form.cover_image} alt="Preview" className="mt-2 max-h-40 w-full rounded-lg border border-border object-cover" />}
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1.5">
