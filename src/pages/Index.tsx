@@ -1,51 +1,41 @@
-import { Heart, TrendingUp, Users } from "lucide-react";
-import ActionCard from "@/components/ActionCard";
+import { Heart, TrendingUp, Users, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import heroBanner from "@/assets/hero-banner.png";
-import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { toEmbedUrl } from "@/lib/siteContent";
+import { Button } from "@/components/ui/button";
 
-const actions = [
-  {
-    title: "Campanha do Agasalho 2026",
-    description: "Distribuição de cobertores e roupas de inverno para comunidades carentes da zona sul.",
-    date: "15 Fev",
-    volunteers: 45,
-    image: campanhaAgasalho,
-    category: "Alimentação",
-    slug: "campanha-do-agasalho",
-  },
-  {
-    title: "Reforço Escolar Comunitário",
-    description: "Aulas de reforço gratuitas para crianças do ensino fundamental nas escolas públicas.",
-    date: "20 Fev",
-    volunteers: 20,
-    image: heroBanner,
-    category: "Educação",
-    slug: "reforco-escolar-comunitario",
-  },
-  {
-    title: "Mutirão de Limpeza do Rio",
-    description: "Limpeza e revitalização das margens do rio com plantio de mudas nativas.",
-    date: "22 Fev",
-    volunteers: 60,
-    image: heroBanner,
-    category: "Meio Ambiente",
-    slug: "mutirao-de-limpeza-do-rio",
-  },
-  {
-    title: "Atendimento Médico Solidário",
-    description: "Consultas médicas gratuitas para comunidades sem acesso ao posto de saúde.",
-    date: "28 Fev",
-    volunteers: 15,
-    image: heroBanner,
-    category: "Saúde",
-    slug: "atendimento-medico-solidario",
-  },
-];
+type NewsItem = {
+  id: string;
+  title: string;
+  content: string;
+  cover_image: string | null;
+  link_url: string | null;
+  link_label: string | null;
+  created_at: string;
+};
 
 const Index = () => {
   const { get } = useSiteContent();
+  const [news, setNews] = useState<NewsItem[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const { data } = await supabase
+        .from("news" as any)
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: false });
+      setNews((data as any) || []);
+    };
+    load();
+    const channel = supabase
+      .channel("news_changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "news" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const stats = [
     { label: get("home_stats", "stat1_label"), value: get("home_stats", "stat1_value"), icon: Heart },
@@ -107,15 +97,39 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display text-xl font-semibold text-foreground">
-            {get("home_actions_header", "title")}
-          </h2>
-          <span className="text-xs text-primary font-medium">{get("home_actions_header", "link_label")}</span>
+        {/* Notícias */}
+        <div className="mb-3">
+          <h2 className="font-display text-xl font-semibold text-foreground">Notícias</h2>
         </div>
         <div className="space-y-4">
-          {actions.map((action) => <ActionCard key={action.title} {...action} />)}
+          {news.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground text-sm bg-card rounded-xl border border-border">
+              Nenhuma notícia publicada ainda
+            </div>
+          ) : (
+            news.map((n) => (
+              <article key={n.id} className="bg-card rounded-xl overflow-hidden shadow-sm border border-border animate-scale-in">
+                {n.cover_image && (
+                  <img src={n.cover_image} alt={n.title} className="w-full h-44 object-cover" />
+                )}
+                <div className="p-4 space-y-2">
+                  <p className="text-[0.65rem] text-muted-foreground uppercase tracking-wide">
+                    {new Date(n.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
+                  </p>
+                  <h3 className="font-display text-lg font-semibold text-foreground leading-tight">{n.title}</h3>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{n.content}</p>
+                  {n.link_url && (
+                    <Button asChild className="w-full gap-2 mt-2">
+                      <a href={n.link_url} target="_blank" rel="noreferrer">
+                        <ExternalLink className="h-4 w-4" />
+                        {n.link_label || "Saiba mais"}
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </article>
+            ))
+          )}
         </div>
       </div>
     </div>
