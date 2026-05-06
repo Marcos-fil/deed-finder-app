@@ -64,7 +64,7 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
@@ -72,6 +72,7 @@ const Admin = () => {
       supabase.from("class_attendance" as any).select("*").order("confirmed_at", { ascending: false }),
       supabase.from("parent_child_links" as any).select("*"),
       supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
+      supabase.from("user_roles" as any).select("*"),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -83,7 +84,29 @@ const Admin = () => {
     const subscriptionData = (subsRes.data as any[]) || [];
     setSubscriptions(subscriptionData);
     setSubscriptionAmounts(Object.fromEntries(subscriptionData.map((s: any) => [s.id, s.monthly_amount ? String(s.monthly_amount) : ""])));
+    const rolesMap: Record<string, string> = {};
+    ((rolesRes.data as any[]) || []).forEach((r: any) => {
+      // priorizar admin sobre outros papéis
+      if (rolesMap[r.user_id] !== "admin") rolesMap[r.user_id] = r.role;
+    });
+    setUserRoles(rolesMap);
     setLoading(false);
+  };
+
+  const handleChangeRole = async (userId: string, newRole: "admin" | "user") => {
+    // remove papéis existentes do usuário
+    const { error: delErr } = await supabase.from("user_roles" as any).delete().eq("user_id", userId);
+    if (delErr) {
+      toast({ title: "Erro ao atualizar papel", description: delErr.message, variant: "destructive" });
+      return;
+    }
+    const { error: insErr } = await supabase.from("user_roles" as any).insert({ user_id: userId, role: newRole } as any);
+    if (insErr) {
+      toast({ title: "Erro ao definir papel", description: insErr.message, variant: "destructive" });
+      return;
+    }
+    setUserRoles((prev) => ({ ...prev, [userId]: newRole }));
+    toast({ title: "Papel atualizado", description: newRole === "admin" ? "Usuário agora é Administrador" : "Usuário agora é Usuário comum" });
   };
 
   const handleCreateClass = async () => {
