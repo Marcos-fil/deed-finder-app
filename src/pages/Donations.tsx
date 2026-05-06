@@ -2,7 +2,7 @@ import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation,
 import DonationCard from "@/components/DonationCard";
 import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,6 +80,32 @@ const Donations = () => {
 
   const subscriberAge = calculateAge(subscriberBirthDate);
   const isMinor = subscriberAge !== null && subscriberAge < 18;
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from("subscription_registrations" as any)
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error || !data) return;
+      const reg: any = data;
+      setSubscriberName(reg.subscriber_name ?? "");
+      setSubscriberBirthDate(reg.birth_date ?? "");
+      setSubscriberPhone(reg.phone ?? "");
+      setSubscriberAddress(reg.address ?? "");
+      setSubscriptionAmount(reg.monthly_amount ? String(reg.monthly_amount) : "");
+      setGuardianName(reg.guardian_name ?? "");
+      setGuardianDocument(reg.guardian_document ?? "");
+      setGuardianAuthorized(!!reg.guardian_authorized);
+      if (reg.start_date) setSubscriptionStartDate(new Date(reg.start_date + "T00:00:00"));
+      setSubscriptionJoined(true);
+      setShowSubscriptionForm(false);
+    })();
+  }, [user]);
 
   const finalAmount = selectedAmount || (customAmount ? parseFloat(customAmount) : 0);
 
