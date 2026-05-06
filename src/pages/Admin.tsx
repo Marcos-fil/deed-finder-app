@@ -48,6 +48,7 @@ const Admin = () => {
   const [attendance, setAttendance] = useState<any[]>([]);
   const [parentLinks, setParentLinks] = useState<any[]>([]);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [userRoles, setUserRoles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   const [showClassForm, setShowClassForm] = useState(false);
@@ -63,7 +64,7 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
@@ -71,6 +72,7 @@ const Admin = () => {
       supabase.from("class_attendance" as any).select("*").order("confirmed_at", { ascending: false }),
       supabase.from("parent_child_links" as any).select("*"),
       supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
+      supabase.from("user_roles" as any).select("*"),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -82,7 +84,29 @@ const Admin = () => {
     const subscriptionData = (subsRes.data as any[]) || [];
     setSubscriptions(subscriptionData);
     setSubscriptionAmounts(Object.fromEntries(subscriptionData.map((s: any) => [s.id, s.monthly_amount ? String(s.monthly_amount) : ""])));
+    const rolesMap: Record<string, string> = {};
+    ((rolesRes.data as any[]) || []).forEach((r: any) => {
+      // priorizar admin sobre outros papéis
+      if (rolesMap[r.user_id] !== "admin") rolesMap[r.user_id] = r.role;
+    });
+    setUserRoles(rolesMap);
     setLoading(false);
+  };
+
+  const handleChangeRole = async (userId: string, newRole: "admin" | "user") => {
+    // remove papéis existentes do usuário
+    const { error: delErr } = await supabase.from("user_roles" as any).delete().eq("user_id", userId);
+    if (delErr) {
+      toast({ title: "Erro ao atualizar papel", description: delErr.message, variant: "destructive" });
+      return;
+    }
+    const { error: insErr } = await supabase.from("user_roles" as any).insert({ user_id: userId, role: newRole } as any);
+    if (insErr) {
+      toast({ title: "Erro ao definir papel", description: insErr.message, variant: "destructive" });
+      return;
+    }
+    setUserRoles((prev) => ({ ...prev, [userId]: newRole }));
+    toast({ title: "Papel atualizado", description: newRole === "admin" ? "Usuário agora é Administrador" : "Usuário agora é Usuário comum" });
   };
 
   const handleCreateClass = async () => {
@@ -484,7 +508,33 @@ const Admin = () => {
               <div className="space-y-4">
                 <div className="bg-card rounded-xl p-4 border border-border"><h3 className="font-semibold text-foreground text-sm mb-1">Usuários Cadastrados</h3><p className="text-3xl font-bold text-primary">{users.length}</p></div>
                 <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Buscar usuário..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" /></div>
-                <div className="bg-card rounded-xl border border-border overflow-hidden"><div className="p-4 border-b border-border bg-muted/30"><h3 className="font-semibold text-foreground text-sm">Lista de Usuários</h3></div><div className="divide-y divide-border">{filteredUsers.map((u: any) => <div key={u.id} className="px-4 py-3 flex items-center justify-between"><div className="flex items-center gap-3"><div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"><span className="text-xs font-bold text-primary">{(u.display_name || "U")[0].toUpperCase()}</span></div><div><p className="text-sm font-medium text-foreground">{u.display_name || "Sem nome"}</p><p className="text-xs text-muted-foreground">Desde {new Date(u.created_at).toLocaleDateString("pt-BR")}</p></div></div><Badge variant="secondary" className="text-[10px]">Usuário</Badge></div>)}</div></div>
+                <div className="bg-card rounded-xl border border-border overflow-hidden">
+                  <div className="p-4 border-b border-border bg-muted/30"><h3 className="font-semibold text-foreground text-sm">Lista de Usuários</h3></div>
+                  <div className="divide-y divide-border">
+                    {filteredUsers.map((u: any) => {
+                      const role = userRoles[u.user_id] || "user";
+                      const isSelf = user?.id === u.user_id;
+                      return (
+                        <div key={u.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"><span className="text-xs font-bold text-primary">{(u.display_name || "U")[0].toUpperCase()}</span></div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">{u.display_name || "Sem nome"}{isSelf && <span className="text-xs text-muted-foreground"> (você)</span>}</p>
+                              <p className="text-xs text-muted-foreground">Desde {new Date(u.created_at).toLocaleDateString("pt-BR")}</p>
+                            </div>
+                          </div>
+                          <Select value={role} onValueChange={(v) => handleChangeRole(u.user_id, v as "admin" | "user")} disabled={isSelf}>
+                            <SelectTrigger className="w-[150px] h-9"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="user">Usuário</SelectItem>
+                              <SelectItem value="admin">Administrador</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
                 <div className="bg-card rounded-xl p-4 border border-border"><div className="flex items-center gap-2 mb-2"><Shield className="h-4 w-4 text-primary" /><h3 className="font-semibold text-foreground text-sm">Informações de Segurança</h3></div><div className="space-y-2 text-xs text-muted-foreground"><p>• Usuários não podem alterar configurações do app</p><p>• Dados protegidos por políticas de acesso</p><p>• Autenticação obrigatória para todas as funcionalidades</p><p>• Proteção contra senhas vazadas ativada</p></div></div>
               </div>
             )}
