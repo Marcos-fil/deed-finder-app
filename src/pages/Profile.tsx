@@ -126,7 +126,6 @@ const Profile = () => {
         {/* Menu */}
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           {[
-            { icon: Bell, label: "Notificações", action: () => {} },
             ...(isAdmin ? [
               { icon: Shield, label: "Painel Admin", action: () => navigate("/admin") },
               { icon: SettingsIcon, label: "Configurações", action: () => navigate("/configuracoes") },
