@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Sun, Moon, Volume2, Type, Maximize } from "lucide-react";
+import { ArrowLeft, Sun, Moon, Volume2, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -11,7 +11,6 @@ const Settings = () => {
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [volume, setVolume] = useState(() => Number(localStorage.getItem("app-volume") ?? 80));
   const [fontSize, setFontSize] = useState(() => localStorage.getItem("app-font-size") ?? "medium");
-  const [dimensions, setDimensions] = useState(() => localStorage.getItem("app-dimensions") ?? "default");
 
   useEffect(() => {
     if (darkMode) {
@@ -32,10 +31,6 @@ const Settings = () => {
     const sizes: Record<string, string> = { small: "14px", medium: "16px", large: "18px", "extra-large": "20px" };
     root.style.fontSize = sizes[fontSize] || "16px";
   }, [fontSize]);
-
-  useEffect(() => {
-    localStorage.setItem("app-dimensions", dimensions);
-  }, [dimensions]);
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -103,26 +98,6 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Dimensões */}
-        <div className="bg-card rounded-xl p-4 border border-border">
-          <div className="flex items-center gap-3 mb-1">
-            <Maximize className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-sm text-foreground">Dimensões</h3>
-          </div>
-          <p className="text-xs text-muted-foreground mb-3 ml-8">Ajuste a densidade visual do app</p>
-          <div className="ml-8">
-            <Select value={dimensions} onValueChange={setDimensions}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="compact">Compacto</SelectItem>
-                <SelectItem value="default">Padrão</SelectItem>
-                <SelectItem value="comfortable">Confortável</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
       </div>
     </div>
   );
