@@ -197,7 +197,7 @@ const Admin = () => {
     { id: "assinaturas" as AdminTab, label: "Assinaturas", icon: CalendarDays, count: subscriptions.length },
     { id: "aulas" as AdminTab, label: "Aulas", icon: BookOpen, count: classes.length },
     { id: "presencas" as AdminTab, label: "Presenças", icon: UserCheck, count: attendance.length },
-    { id: "responsaveis" as AdminTab, label: "Pais", icon: Link2, count: parentLinks.length },
+    
     { id: "conteudo" as AdminTab, label: "Conteúdo", icon: FileText, count: 0 },
     { id: "noticias" as AdminTab, label: "Notícias", icon: Newspaper, count: 0 },
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
