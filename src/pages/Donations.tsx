@@ -2,7 +2,7 @@ import { Heart, ArrowLeft, Copy, Check, QrCode, ReceiptText, MapPin, Navigation,
 import DonationCard from "@/components/DonationCard";
 import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
