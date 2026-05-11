@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText, Sparkles, Newspaper } from "lucide-react";
+import { ArrowLeft, Users, DollarSign, BookOpen, Shield, Search, Plus, Trash2, UserCheck, Link2, CalendarDays, FileText, Sparkles, Newspaper, HandHeart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,9 @@ import { useAuth } from "@/hooks/useAuth";
 import ContentManager from "@/components/ContentManager";
 import SponsorshipAdmin from "@/components/SponsorshipAdmin";
 import NewsAdmin from "@/components/NewsAdmin";
+import VolunteerAdmin from "@/components/VolunteerAdmin";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
@@ -201,6 +202,7 @@ const Admin = () => {
     { id: "conteudo" as AdminTab, label: "Conteúdo", icon: FileText, count: 0 },
     { id: "noticias" as AdminTab, label: "Notícias", icon: Newspaper, count: 0 },
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
+    { id: "voluntarios" as AdminTab, label: "Voluntários", icon: HandHeart, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
 
@@ -503,6 +505,8 @@ const Admin = () => {
             {activeTab === "noticias" && <NewsAdmin />}
 
             {activeTab === "apadrinhar" && <SponsorshipAdmin />}
+
+            {activeTab === "voluntarios" && <VolunteerAdmin />}
 
             {activeTab === "seguranca" && (
               <div className="space-y-4">
