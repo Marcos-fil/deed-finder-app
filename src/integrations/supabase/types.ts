@@ -289,6 +289,35 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsorship_sponsors: {
+        Row: {
+          child_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsorship_sponsors_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "sponsorship_children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_registrations: {
         Row: {
           address: string
