@@ -1,4 +1,5 @@
-import { Heart, TrendingUp, Users, ExternalLink } from "lucide-react";
+import { Heart, TrendingUp, Users, ExternalLink, HandHeart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import heroBanner from "@/assets/hero-banner.png";
@@ -73,6 +74,20 @@ const Index = () => {
             </div>
           ))}
         </div>
+
+        {/* Voluntários CTA */}
+        <Link to="/voluntarios" className="block mb-6">
+          <div className="bg-card rounded-xl p-4 border border-border flex items-center gap-3 hover:border-primary/40 transition-colors">
+            <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <HandHeart className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-base font-semibold text-foreground">Seja voluntário</h3>
+              <p className="text-xs text-muted-foreground">Inscreva-se nas próximas ações</p>
+            </div>
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </Link>
 
         {/* Documentário */}
         <div className="mb-6">

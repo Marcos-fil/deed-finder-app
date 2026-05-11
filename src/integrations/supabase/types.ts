@@ -393,6 +393,89 @@ export type Database = {
         }
         Relationships: []
       }
+      volunteer_actions: {
+        Row: {
+          action_date: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          entry_fee: number
+          id: string
+          location: string | null
+          pix_key: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          action_date: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_fee?: number
+          id?: string
+          location?: string | null
+          pix_key: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          action_date?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_fee?: number
+          id?: string
+          location?: string | null
+          pix_key?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      volunteer_registrations: {
+        Row: {
+          action_id: string
+          amount_paid: number
+          created_at: string
+          full_name: string
+          id: string
+          payment_status: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action_id: string
+          amount_paid?: number
+          created_at?: string
+          full_name: string
+          id?: string
+          payment_status?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action_id?: string
+          amount_paid?: number
+          created_at?: string
+          full_name?: string
+          id?: string
+          payment_status?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "volunteer_registrations_action_id_fkey"
+            columns: ["action_id"]
+            isOneToOne: false
+            referencedRelation: "volunteer_actions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

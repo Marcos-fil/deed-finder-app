@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import ParentDashboard from "./pages/ParentDashboard";
+import Volunteer from "./pages/Volunteer";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,7 @@ const AppRoutes = () => {
         <Route path="/configuracoes" element={<AdminRoute><Settings /></AdminRoute>} />
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/ajuda" element={<ProtectedRoute><Help /></ProtectedRoute>} />
+        <Route path="/voluntarios" element={<ProtectedRoute><Volunteer /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {user && <BottomNav />}
