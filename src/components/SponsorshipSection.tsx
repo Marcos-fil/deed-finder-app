@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Heart, ExternalLink, CheckCircle2, Sparkles } from "lucide-react";
+import { Heart, ExternalLink, CheckCircle2, Sparkles, Users } from "lucide-react";
 
 interface Child {
   id: string;
@@ -12,44 +12,55 @@ interface Child {
   description: string | null;
   amount: number;
   payment_link: string;
-  sponsored_by: string | null;
-  sponsored_at: string | null;
 }
 
 const SponsorshipSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [children, setChildren] = useState<Child[]>([]);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [mySponsorships, setMySponsorships] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
-    const { data, error } = await supabase
+    const { data: kids } = await supabase
       .from("sponsorship_children" as any)
-      .select("*")
+      .select("id,name,cause,description,amount,payment_link")
       .order("created_at", { ascending: true });
-    if (!error && data) setChildren(data as any);
+    const list = (kids as any as Child[]) || [];
+    setChildren(list);
+
+    const { data: allSponsors } = await supabase
+      .from("sponsorship_sponsors" as any)
+      .select("child_id,user_id");
+    const c: Record<string, number> = {};
+    const mine = new Set<string>();
+    (allSponsors as any[] || []).forEach((s) => {
+      c[s.child_id] = (c[s.child_id] || 0) + 1;
+      if (user && s.user_id === user.id) mine.add(s.child_id);
+    });
+    setCounts(c);
+    setMySponsorships(mine);
     setLoading(false);
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [user?.id]);
 
   const handleSponsor = async (child: Child) => {
     if (!user) {
       toast({ title: "Faça login", description: "Entre para apadrinhar uma criança.", variant: "destructive" });
       return;
     }
-    if (child.sponsored_by) {
-      toast({ title: "Já apadrinhada", description: "Outra pessoa já apadrinhou essa criança." });
+    if (mySponsorships.has(child.id)) {
+      window.open(child.payment_link, "_blank", "noopener,noreferrer");
       return;
     }
 
     const { error } = await supabase
-      .from("sponsorship_children" as any)
-      .update({ sponsored_by: user.id, sponsored_at: new Date().toISOString() } as any)
-      .eq("id", child.id)
-      .is("sponsored_by", null);
+      .from("sponsorship_sponsors" as any)
+      .insert({ child_id: child.id, user_id: user.id } as any);
 
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
@@ -71,13 +82,13 @@ const SponsorshipSection = () => {
         </div>
         <h2 className="font-display text-lg font-semibold text-foreground">Apadrinhe uma criança</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Cada criança tem uma necessidade específica. Escolha uma e contribua diretamente pelo link de pagamento. Cada criança pode ser apadrinhada por apenas uma pessoa.
+          Cada criança tem uma necessidade específica. Escolha uma e contribua diretamente pelo link de pagamento. Várias pessoas podem apadrinhar a mesma criança.
         </p>
       </div>
 
       {children.map((child) => {
-        const sponsored = !!child.sponsored_by;
-        const sponsoredByMe = child.sponsored_by === user?.id;
+        const sponsoredByMe = mySponsorships.has(child.id);
+        const total = counts[child.id] || 0;
         return (
           <div key={child.id} className="bg-card rounded-xl p-4 border border-border">
             <div className="flex items-start justify-between gap-3">
@@ -90,24 +101,27 @@ const SponsorshipSection = () => {
                 <p className="text-lg font-bold text-foreground mt-2">
                   R$ {Number(child.amount).toFixed(2).replace(".", ",")}
                 </p>
+                {total > 0 && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                    <Users className="h-3 w-3" />
+                    <span>{total} {total === 1 ? "padrinho" : "padrinhos"}</span>
+                  </div>
+                )}
               </div>
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Heart className={`h-5 w-5 ${sponsored ? "text-primary fill-primary" : "text-primary"}`} />
+                <Heart className={`h-5 w-5 ${sponsoredByMe ? "text-primary fill-primary" : "text-primary"}`} />
               </div>
             </div>
 
-            {sponsored ? (
-              <div className="mt-3 flex items-center gap-2 text-sm bg-success/10 text-success-foreground rounded-lg px-3 py-2 border border-success/30">
+            {sponsoredByMe && (
+              <div className="mt-3 flex items-center gap-2 text-sm bg-success/10 rounded-lg px-3 py-2 border border-success/30">
                 <CheckCircle2 className="h-4 w-4 text-success" />
-                <span className="text-foreground">
-                  {sponsoredByMe ? "Você apadrinhou esta criança ❤️" : "Já apadrinhada"}
-                </span>
+                <span className="text-foreground">Você apadrinhou esta criança ❤️</span>
               </div>
-            ) : (
-              <Button className="w-full mt-3 gradient-primary text-primary-foreground" onClick={() => handleSponsor(child)}>
-                Apadrinhar e doar <ExternalLink className="h-4 w-4 ml-2" />
-              </Button>
             )}
+            <Button className="w-full mt-3 gradient-primary text-primary-foreground" onClick={() => handleSponsor(child)}>
+              {sponsoredByMe ? "Doar novamente" : "Apadrinhar e doar"} <ExternalLink className="h-4 w-4 ml-2" />
+            </Button>
           </div>
         );
       })}

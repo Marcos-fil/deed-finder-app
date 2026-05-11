@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus, User } from "lucide-react";
+import { Trash2, Plus, User, X } from "lucide-react";
 
 interface Child {
   id: string;
@@ -15,19 +15,20 @@ interface Child {
   description: string | null;
   amount: number;
   payment_link: string;
-  sponsored_by: string | null;
-  sponsored_at: string | null;
 }
 
-interface SponsorInfo {
-  display_name: string | null;
-  email?: string | null;
+interface Sponsor {
+  id: string;
+  child_id: string;
+  user_id: string;
+  created_at: string;
 }
 
 const SponsorshipAdmin = () => {
   const { toast } = useToast();
   const [children, setChildren] = useState<Child[]>([]);
-  const [sponsors, setSponsors] = useState<Record<string, SponsorInfo>>({});
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", cause: "", description: "", amount: "", payment_link: "" });
   const [loading, setLoading] = useState(true);
 
@@ -40,17 +41,24 @@ const SponsorshipAdmin = () => {
     const list = (data as any as Child[]) || [];
     setChildren(list);
 
-    const sponsorIds = list.map((c) => c.sponsored_by).filter(Boolean) as string[];
-    if (sponsorIds.length) {
+    const { data: sps } = await supabase
+      .from("sponsorship_sponsors" as any)
+      .select("*")
+      .order("created_at", { ascending: false });
+    const sList = (sps as any as Sponsor[]) || [];
+    setSponsors(sList);
+
+    const ids = Array.from(new Set(sList.map((s) => s.user_id)));
+    if (ids.length) {
       const { data: profs } = await supabase
         .from("profiles")
         .select("user_id, display_name")
-        .in("user_id", sponsorIds);
-      const map: Record<string, SponsorInfo> = {};
+        .in("user_id", ids);
+      const map: Record<string, string> = {};
       (profs || []).forEach((p: any) => {
-        map[p.user_id] = { display_name: p.display_name };
+        map[p.user_id] = p.display_name || p.user_id.slice(0, 8);
       });
-      setSponsors(map);
+      setProfiles(map);
     }
     setLoading(false);
   };
@@ -92,16 +100,13 @@ const SponsorshipAdmin = () => {
     load();
   };
 
-  const handleClearSponsor = async (id: string) => {
-    const { error } = await supabase
-      .from("sponsorship_children" as any)
-      .update({ sponsored_by: null, sponsored_at: null } as any)
-      .eq("id", id);
+  const handleRemoveSponsor = async (sponsorId: string) => {
+    const { error } = await supabase.from("sponsorship_sponsors" as any).delete().eq("id", sponsorId);
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Padrinho liberado" });
+    toast({ title: "Padrinho removido" });
     load();
   };
 
@@ -148,42 +153,49 @@ const SponsorshipAdmin = () => {
           ) : children.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nenhuma criança cadastrada.</p>
           ) : (
-            children.map((child) => (
-              <div key={child.id} className="border border-border rounded-lg p-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <p className="font-semibold">{child.name}</p>
-                    <p className="text-sm text-primary">{child.cause}</p>
-                    <p className="text-sm font-bold mt-1">R$ {Number(child.amount).toFixed(2).replace(".", ",")}</p>
-                    <a href={child.payment_link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground underline break-all">
-                      {child.payment_link}
-                    </a>
-                  </div>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(child.id)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-                {child.sponsored_by ? (
-                  <div className="mt-2 bg-muted rounded-lg p-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-primary" />
-                      <span className="font-medium">Padrinho:</span>
-                      <span>{sponsors[child.sponsored_by]?.display_name || child.sponsored_by.slice(0, 8)}</span>
+            children.map((child) => {
+              const childSponsors = sponsors.filter((s) => s.child_id === child.id);
+              return (
+                <div key={child.id} className="border border-border rounded-lg p-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <p className="font-semibold">{child.name}</p>
+                      <p className="text-sm text-primary">{child.cause}</p>
+                      <p className="text-sm font-bold mt-1">R$ {Number(child.amount).toFixed(2).replace(".", ",")}</p>
+                      <a href={child.payment_link} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground underline break-all">
+                        {child.payment_link}
+                      </a>
                     </div>
-                    {child.sponsored_at && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Em {new Date(child.sponsored_at).toLocaleString("pt-BR")}
-                      </p>
-                    )}
-                    <Button size="sm" variant="outline" className="mt-2" onClick={() => handleClearSponsor(child.id)}>
-                      Liberar para novo padrinho
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(child.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground mt-2">Aguardando padrinho</p>
-                )}
-              </div>
-            ))
+                  <div className="mt-2 bg-muted rounded-lg p-2 text-sm">
+                    <p className="font-medium mb-2">Padrinhos ({childSponsors.length})</p>
+                    {childSponsors.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">Nenhum padrinho ainda</p>
+                    ) : (
+                      <div className="space-y-1">
+                        {childSponsors.map((s) => (
+                          <div key={s.id} className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 text-xs">
+                              <User className="h-3 w-3 text-primary" />
+                              <span>{profiles[s.user_id] || s.user_id.slice(0, 8)}</span>
+                              <span className="text-muted-foreground">
+                                {new Date(s.created_at).toLocaleDateString("pt-BR")}
+                              </span>
+                            </div>
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleRemoveSponsor(s.id)}>
+                              <X className="h-3 w-3 text-destructive" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
           )}
         </CardContent>
       </Card>
