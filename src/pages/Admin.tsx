@@ -205,6 +205,33 @@ const Admin = () => {
     }
   };
 
+  const handleSavePixStats = async () => {
+    const goal = Number(pixStatsForm.month_goal);
+    const amount = Number(pixStatsForm.current_amount);
+    const donors = Number(pixStatsForm.donor_count);
+    if (!goal || goal <= 0 || isNaN(amount) || amount < 0 || isNaN(donors) || donors < 0 || !pixStatsForm.month_label.trim()) {
+      toast({ title: "Preencha todos os campos corretamente", variant: "destructive" });
+      return;
+    }
+
+    const payload = {
+      month_goal: goal,
+      current_amount: amount,
+      donor_count: donors,
+      month_label: pixStatsForm.month_label.trim(),
+    };
+
+    const { error } = pixStats
+      ? await supabase.from("pix_stats" as any).update(payload as any).eq("id", pixStats.id)
+      : await supabase.from("pix_stats" as any).insert(payload as any);
+
+    if (error) toast({ title: "Erro ao salvar estatísticas", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Estatísticas PIX atualizadas!" });
+      loadData();
+    }
+  };
+
   const tabs = [
     { id: "alunos" as AdminTab, label: "Alunos", icon: Users, count: enrollments.length },
     { id: "doacoes" as AdminTab, label: "Doações", icon: DollarSign, count: donations.length },
