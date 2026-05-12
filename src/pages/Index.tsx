@@ -75,20 +75,6 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Voluntários CTA */}
-        <Link to="/voluntarios" className="block mb-6">
-          <div className="bg-card rounded-xl p-4 border border-border flex items-center gap-3 hover:border-primary/40 transition-colors">
-            <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <HandHeart className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-display text-base font-semibold text-foreground">Seja voluntário</h3>
-              <p className="text-xs text-muted-foreground">Inscreva-se nas próximas ações</p>
-            </div>
-            <ExternalLink className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </Link>
-
         {/* Notícias */}
         <div className="mb-6">
           <h2 className="font-display text-xl font-semibold text-foreground mb-3">
@@ -111,6 +97,20 @@ const Index = () => {
             </div>
           </div>
         </div>
+
+        {/* Voluntários CTA */}
+        <Link to="/voluntarios" className="block mb-6">
+          <div className="bg-card rounded-xl p-4 border border-border flex items-center gap-3 hover:border-primary/40 transition-colors">
+            <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <HandHeart className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-base font-semibold text-foreground">Seja voluntário</h3>
+              <p className="text-xs text-muted-foreground">Inscreva-se nas próximas ações</p>
+            </div>
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </Link>
 
         {/* Notícias */}
         <div className="mb-3">
