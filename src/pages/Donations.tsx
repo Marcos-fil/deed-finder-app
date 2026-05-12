@@ -66,6 +66,15 @@ const Donations = () => {
   const [guardianName, setGuardianName] = useState("");
   const [guardianDocument, setGuardianDocument] = useState("");
   const [guardianAuthorized, setGuardianAuthorized] = useState(false);
+  const [pixStats, setPixStats] = useState<{ month_goal: number; current_amount: number; donor_count: number; month_label: string } | null>(null);
+
+  useEffect(() => {
+    const loadPixStats = async () => {
+      const { data } = await supabase.from("pix_stats" as any).select("*").limit(1).maybeSingle();
+      if (data) setPixStats(data as any);
+    };
+    loadPixStats();
+  }, []);
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;
