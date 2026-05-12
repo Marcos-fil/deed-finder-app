@@ -199,6 +199,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pix_stats: {
+        Row: {
+          current_amount: number
+          donor_count: number
+          id: string
+          month_goal: number
+          month_label: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          current_amount?: number
+          donor_count?: number
+          id?: string
+          month_goal?: number
+          month_label?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          current_amount?: number
+          donor_count?: number
+          id?: string
+          month_goal?: number
+          month_label?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
