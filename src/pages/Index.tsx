@@ -89,7 +89,7 @@ const Index = () => {
           </div>
         </Link>
 
-        {/* Documentário */}
+        {/* Notícias */}
         <div className="mb-6">
           <h2 className="font-display text-xl font-semibold text-foreground mb-3">
             {get("home_documentary", "section_title")}
