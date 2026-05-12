@@ -58,6 +58,8 @@ const Admin = () => {
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
   const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
   const [attendanceDates, setAttendanceDates] = useState<Record<string, string>>({});
+  const [pixStats, setPixStats] = useState<any>(null);
+  const [pixStatsForm, setPixStatsForm] = useState({ month_goal: "", current_amount: "", donor_count: "", month_label: "" });
 
   useEffect(() => {
     loadData();
@@ -65,7 +67,7 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes, pixRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
@@ -74,6 +76,7 @@ const Admin = () => {
       supabase.from("parent_child_links" as any).select("*"),
       supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles" as any).select("*"),
+      supabase.from("pix_stats" as any).select("*").limit(1).maybeSingle(),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -91,6 +94,16 @@ const Admin = () => {
       if (rolesMap[r.user_id] !== "admin") rolesMap[r.user_id] = r.role;
     });
     setUserRoles(rolesMap);
+    const pixData = (pixRes.data as any) || null;
+    setPixStats(pixData);
+    if (pixData) {
+      setPixStatsForm({
+        month_goal: String(pixData.month_goal ?? ""),
+        current_amount: String(pixData.current_amount ?? ""),
+        donor_count: String(pixData.donor_count ?? ""),
+        month_label: pixData.month_label ?? "",
+      });
+    }
     setLoading(false);
   };
 
