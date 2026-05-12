@@ -355,6 +355,61 @@ const Admin = () => {
                   </div>
                 </div>
 
+                {/* PIX Stats Editor */}
+                <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+                  <h3 className="font-semibold text-foreground text-sm">Estatísticas da área PIX</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Meta do mês (R$)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={pixStatsForm.month_goal}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, month_goal: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Valor arrecadado (R$)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={pixStatsForm.current_amount}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, current_amount: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Nº de doadores</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={pixStatsForm.donor_count}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, donor_count: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Mês/label</label>
+                      <input
+                        type="text"
+                        value={pixStatsForm.month_label}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, month_label: e.target.value }))}
+                        placeholder="Fevereiro 2026"
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={handleSavePixStats} className="w-full gradient-primary text-primary-foreground">
+                    Salvar estatísticas PIX
+                  </Button>
+                </div>
+
                 {donations.length > 0 ? (
                   <div className="bg-card rounded-xl border border-border overflow-hidden">
                     <div className="p-4 border-b border-border bg-muted/30"><h3 className="font-semibold text-foreground text-sm">Histórico de Doações</h3></div>
