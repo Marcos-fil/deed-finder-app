@@ -66,6 +66,15 @@ const Donations = () => {
   const [guardianName, setGuardianName] = useState("");
   const [guardianDocument, setGuardianDocument] = useState("");
   const [guardianAuthorized, setGuardianAuthorized] = useState(false);
+  const [pixStats, setPixStats] = useState<{ month_goal: number; current_amount: number; donor_count: number; month_label: string } | null>(null);
+
+  useEffect(() => {
+    const loadPixStats = async () => {
+      const { data } = await supabase.from("pix_stats" as any).select("*").limit(1).maybeSingle();
+      if (data) setPixStats(data as any);
+    };
+    loadPixStats();
+  }, []);
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;
@@ -499,16 +508,18 @@ const Donations = () => {
         ) : (
         <>
         {/* Progress */}
+        {pixStats && (
         <div className="bg-card rounded-xl p-4 shadow-sm border border-border mb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className="text-muted-foreground">Meta do mês</span>
-            <span className="font-semibold text-foreground">R$ 8.450 / R$ 15.000</span>
+            <span className="font-semibold text-foreground">R$ {Number(pixStats.current_amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} / R$ {Number(pixStats.month_goal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="h-2.5 bg-muted rounded-full overflow-hidden">
-            <div className="h-full gradient-primary rounded-full transition-all duration-1000" style={{ width: "56%" }} />
+            <div className="h-full gradient-primary rounded-full transition-all duration-1000" style={{ width: `${Math.min(100, Math.round((pixStats.current_amount / pixStats.month_goal) * 100))}%` }} />
           </div>
-          <p className="text-xs text-muted-foreground mt-2">142 doadores este mês 💚</p>
+          <p className="text-xs text-muted-foreground mt-2">{pixStats.donor_count} doadores {pixStats.month_label} 💚</p>
         </div>
+        )}
 
         {!showPix ? (
           <>

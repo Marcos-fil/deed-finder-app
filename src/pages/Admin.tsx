@@ -58,6 +58,8 @@ const Admin = () => {
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
   const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
   const [attendanceDates, setAttendanceDates] = useState<Record<string, string>>({});
+  const [pixStats, setPixStats] = useState<any>(null);
+  const [pixStatsForm, setPixStatsForm] = useState({ month_goal: "", current_amount: "", donor_count: "", month_label: "" });
 
   useEffect(() => {
     loadData();
@@ -65,7 +67,7 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes] = await Promise.all([
+    const [enrollRes, donRes, classRes, usersRes, attendanceRes, linksRes, subsRes, rolesRes, pixRes] = await Promise.all([
       supabase.from("class_enrollments" as any).select("*, classes(*)"),
       supabase.from("donations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("classes" as any).select("*"),
@@ -74,6 +76,7 @@ const Admin = () => {
       supabase.from("parent_child_links" as any).select("*"),
       supabase.from("subscription_registrations" as any).select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles" as any).select("*"),
+      supabase.from("pix_stats" as any).select("*").limit(1).maybeSingle(),
     ]);
 
     setEnrollments((enrollRes.data as any[]) || []);
@@ -91,6 +94,16 @@ const Admin = () => {
       if (rolesMap[r.user_id] !== "admin") rolesMap[r.user_id] = r.role;
     });
     setUserRoles(rolesMap);
+    const pixData = (pixRes.data as any) || null;
+    setPixStats(pixData);
+    if (pixData) {
+      setPixStatsForm({
+        month_goal: String(pixData.month_goal ?? ""),
+        current_amount: String(pixData.current_amount ?? ""),
+        donor_count: String(pixData.donor_count ?? ""),
+        month_label: pixData.month_label ?? "",
+      });
+    }
     setLoading(false);
   };
 
@@ -188,6 +201,33 @@ const Admin = () => {
     if (error) toast({ title: "Erro ao atualizar valor", description: error.message, variant: "destructive" });
     else {
       toast({ title: "Valor mensal atualizado" });
+      loadData();
+    }
+  };
+
+  const handleSavePixStats = async () => {
+    const goal = Number(pixStatsForm.month_goal);
+    const amount = Number(pixStatsForm.current_amount);
+    const donors = Number(pixStatsForm.donor_count);
+    if (!goal || goal <= 0 || isNaN(amount) || amount < 0 || isNaN(donors) || donors < 0 || !pixStatsForm.month_label.trim()) {
+      toast({ title: "Preencha todos os campos corretamente", variant: "destructive" });
+      return;
+    }
+
+    const payload = {
+      month_goal: goal,
+      current_amount: amount,
+      donor_count: donors,
+      month_label: pixStatsForm.month_label.trim(),
+    };
+
+    const { error } = pixStats
+      ? await supabase.from("pix_stats" as any).update(payload as any).eq("id", pixStats.id)
+      : await supabase.from("pix_stats" as any).insert(payload as any);
+
+    if (error) toast({ title: "Erro ao salvar estatísticas", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Estatísticas PIX atualizadas!" });
       loadData();
     }
   };
@@ -313,6 +353,61 @@ const Admin = () => {
                     <p className="text-xs text-muted-foreground">Nº de Doações</p>
                     <p className="text-2xl font-bold text-foreground">{donations.length}</p>
                   </div>
+                </div>
+
+                {/* PIX Stats Editor */}
+                <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+                  <h3 className="font-semibold text-foreground text-sm">Estatísticas da área PIX</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Meta do mês (R$)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={pixStatsForm.month_goal}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, month_goal: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Valor arrecadado (R$)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={pixStatsForm.current_amount}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, current_amount: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Nº de doadores</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={pixStatsForm.donor_count}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, donor_count: e.target.value }))}
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Mês/label</label>
+                      <input
+                        type="text"
+                        value={pixStatsForm.month_label}
+                        onChange={(e) => setPixStatsForm((prev) => ({ ...prev, month_label: e.target.value }))}
+                        placeholder="Fevereiro 2026"
+                        className="w-full bg-muted rounded-lg px-3 py-2 text-foreground text-sm border-0 outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={handleSavePixStats} className="w-full gradient-primary text-primary-foreground">
+                    Salvar estatísticas PIX
+                  </Button>
                 </div>
 
                 {donations.length > 0 ? (
