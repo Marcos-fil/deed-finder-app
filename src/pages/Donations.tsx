@@ -3,7 +3,7 @@ import DonationCard from "@/components/DonationCard";
 import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import pixQrCode from "@/assets/pix-qrcode.jpeg.asset.json";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -468,7 +468,7 @@ const Donations = () => {
                   <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {getSubscriptionDueDate(selectedMonth).toLocaleDateString("pt-BR")}</p>
                 </div>
                 <div className="bg-white p-4 rounded-xl">
-                  <QRCodeSVG value={subscriptionPayload} size={180} level="M" />
+                  <img src={pixQrCode.url} alt="QR Code PIX" width={180} height={180} />
                 </div>
                 <Button variant="outline" className="w-full" onClick={handleCopySubscriptionPix}>
                   <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
@@ -579,7 +579,7 @@ const Donations = () => {
             {/* QR Code */}
             <div className="bg-card rounded-2xl p-6 border border-border flex flex-col items-center gap-4">
               <div className="bg-white p-4 rounded-xl">
-                <QRCodeSVG value={generatePixPayload(finalAmount)} size={200} level="M" />
+                <img src={pixQrCode.url} alt="QR Code PIX" width={200} height={200} />
               </div>
               <p className="text-xs text-muted-foreground text-center">
                 Escaneie o QR Code com o app do seu banco
