@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, MapPin, Users, Copy, Check, QrCode, CheckCircle2, X } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import pixQrCode from "@/assets/pix-qrcode.jpeg.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -250,7 +250,7 @@ const Volunteer = () => {
               </div>
               <div className="bg-card rounded-xl p-4 border border-border flex flex-col items-center gap-3">
                 <div className="bg-white p-3 rounded-lg">
-                  <QRCodeSVG value={generatePixPayload(openAction.pix_key, Number(openAction.entry_fee))} size={180} level="M" />
+                  <img src={pixQrCode.url} alt="QR Code PIX" width={180} height={180} />
                 </div>
                 <p className="text-xs text-muted-foreground text-center">Escaneie o QR Code no app do seu banco</p>
                 <p className="text-xs text-center">
