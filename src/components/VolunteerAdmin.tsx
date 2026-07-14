@@ -37,6 +37,7 @@ const VolunteerAdmin = () => {
   const [actions, setActions] = useState<Action[]>([]);
   const [regs, setRegs] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -44,6 +45,7 @@ const VolunteerAdmin = () => {
     location: "",
     entry_fee: "",
     pix_key: "",
+    image_url: "",
   });
 
   const load = async () => {
