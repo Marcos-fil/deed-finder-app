@@ -213,6 +213,7 @@ const Volunteer = () => {
                     Inscrever-se
                   </Button>
                 )}
+                </div>
               </div>
             );
           })
