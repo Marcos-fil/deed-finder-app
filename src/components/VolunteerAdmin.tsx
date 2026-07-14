@@ -175,9 +175,36 @@ const VolunteerAdmin = () => {
             <Label>Chave PIX para recebimento</Label>
             <Input value={form.pix_key} onChange={(e) => setForm({ ...form, pix_key: e.target.value })} maxLength={120} placeholder="email@dominio.com / CPF / chave aleatória" />
           </div>
+          <div>
+            <Label>Foto de capa do evento</Label>
+            <div className="flex items-center gap-2">
+              <label className="flex-1 cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleUpload(f);
+                  }}
+                />
+                <div className="flex items-center justify-center gap-2 h-10 rounded-md border border-dashed border-input bg-background text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploading ? "Enviando..." : form.image_url ? "Trocar imagem" : "Selecionar imagem"}
+                </div>
+              </label>
+              {form.image_url && (
+                <Button variant="ghost" size="icon" type="button" onClick={() => setForm({ ...form, image_url: "" })}>
+                  <X className="h-4 w-4 text-destructive" />
+                </Button>
+              )}
+            </div>
+            {form.image_url && <img src={form.image_url} alt="Preview" className="mt-2 max-h-40 w-full rounded-lg border border-border object-cover" />}
+          </div>
           <Button onClick={handleAdd} className="w-full">
             <Plus className="h-4 w-4 mr-2" /> Criar ação
           </Button>
+
         </CardContent>
       </Card>
 
