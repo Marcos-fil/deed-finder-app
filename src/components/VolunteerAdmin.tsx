@@ -80,6 +80,7 @@ const VolunteerAdmin = () => {
       location: form.location.trim() || null,
       entry_fee: fee,
       pix_key: form.pix_key.trim(),
+      image_url: form.image_url || null,
       created_by: user?.id,
     } as any);
     if (error) {
@@ -87,8 +88,24 @@ const VolunteerAdmin = () => {
       return;
     }
     toast({ title: "Ação criada!" });
-    setForm({ title: "", description: "", action_date: "", location: "", entry_fee: "", pix_key: "" });
+    setForm({ title: "", description: "", action_date: "", location: "", entry_fee: "", pix_key: "", image_url: "" });
     load();
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!user) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `volunteer/${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("news-images").upload(path, file, { upsert: false });
+    if (error) {
+      toast({ title: "Erro ao enviar imagem", description: error.message, variant: "destructive" });
+    } else {
+      const { data } = supabase.storage.from("news-images").getPublicUrl(path);
+      setForm((f) => ({ ...f, image_url: data.publicUrl }));
+      toast({ title: "Imagem enviada!" });
+    }
+    setUploading(false);
   };
 
   const handleDelete = async (id: string) => {
