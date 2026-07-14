@@ -18,6 +18,7 @@ interface Action {
   location: string | null;
   entry_fee: number;
   pix_key: string;
+  image_url: string | null;
 }
 
 interface Registration {
