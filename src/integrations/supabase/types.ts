@@ -431,6 +431,7 @@ export type Database = {
           description: string | null
           entry_fee: number
           id: string
+          image_url: string | null
           location: string | null
           pix_key: string
           title: string
@@ -443,6 +444,7 @@ export type Database = {
           description?: string | null
           entry_fee?: number
           id?: string
+          image_url?: string | null
           location?: string | null
           pix_key: string
           title: string
@@ -455,6 +457,7 @@ export type Database = {
           description?: string | null
           entry_fee?: number
           id?: string
+          image_url?: string | null
           location?: string | null
           pix_key?: string
           title?: string

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus, User, X, Calendar } from "lucide-react";
+import { Trash2, Plus, User, X, Calendar, Upload, Loader2 } from "lucide-react";
 
 interface Action {
   id: string;
@@ -17,6 +17,7 @@ interface Action {
   location: string | null;
   entry_fee: number;
   pix_key: string;
+  image_url: string | null;
 }
 
 interface Registration {
@@ -36,6 +37,7 @@ const VolunteerAdmin = () => {
   const [actions, setActions] = useState<Action[]>([]);
   const [regs, setRegs] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -43,6 +45,7 @@ const VolunteerAdmin = () => {
     location: "",
     entry_fee: "",
     pix_key: "",
+    image_url: "",
   });
 
   const load = async () => {
@@ -77,6 +80,7 @@ const VolunteerAdmin = () => {
       location: form.location.trim() || null,
       entry_fee: fee,
       pix_key: form.pix_key.trim(),
+      image_url: form.image_url || null,
       created_by: user?.id,
     } as any);
     if (error) {
@@ -84,8 +88,24 @@ const VolunteerAdmin = () => {
       return;
     }
     toast({ title: "Ação criada!" });
-    setForm({ title: "", description: "", action_date: "", location: "", entry_fee: "", pix_key: "" });
+    setForm({ title: "", description: "", action_date: "", location: "", entry_fee: "", pix_key: "", image_url: "" });
     load();
+  };
+
+  const handleUpload = async (file: File) => {
+    if (!user) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `volunteer/${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("news-images").upload(path, file, { upsert: false });
+    if (error) {
+      toast({ title: "Erro ao enviar imagem", description: error.message, variant: "destructive" });
+    } else {
+      const { data } = supabase.storage.from("news-images").getPublicUrl(path);
+      setForm((f) => ({ ...f, image_url: data.publicUrl }));
+      toast({ title: "Imagem enviada!" });
+    }
+    setUploading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -155,9 +175,36 @@ const VolunteerAdmin = () => {
             <Label>Chave PIX para recebimento</Label>
             <Input value={form.pix_key} onChange={(e) => setForm({ ...form, pix_key: e.target.value })} maxLength={120} placeholder="email@dominio.com / CPF / chave aleatória" />
           </div>
+          <div>
+            <Label>Foto de capa do evento</Label>
+            <div className="flex items-center gap-2">
+              <label className="flex-1 cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleUpload(f);
+                  }}
+                />
+                <div className="flex items-center justify-center gap-2 h-10 rounded-md border border-dashed border-input bg-background text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  {uploading ? "Enviando..." : form.image_url ? "Trocar imagem" : "Selecionar imagem"}
+                </div>
+              </label>
+              {form.image_url && (
+                <Button variant="ghost" size="icon" type="button" onClick={() => setForm({ ...form, image_url: "" })}>
+                  <X className="h-4 w-4 text-destructive" />
+                </Button>
+              )}
+            </div>
+            {form.image_url && <img src={form.image_url} alt="Preview" className="mt-2 max-h-40 w-full rounded-lg border border-border object-cover" />}
+          </div>
           <Button onClick={handleAdd} className="w-full">
             <Plus className="h-4 w-4 mr-2" /> Criar ação
           </Button>
+
         </CardContent>
       </Card>
 
