@@ -1,0 +1,1 @@
+ALTER TABLE public.volunteer_actions ADD COLUMN IF NOT EXISTS image_url TEXT;
