@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus, User, X, Calendar } from "lucide-react";
+import { Trash2, Plus, User, X, Calendar, Upload, Loader2 } from "lucide-react";
 
 interface Action {
   id: string;
@@ -17,6 +17,7 @@ interface Action {
   location: string | null;
   entry_fee: number;
   pix_key: string;
+  image_url: string | null;
 }
 
 interface Registration {
