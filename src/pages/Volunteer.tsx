@@ -169,7 +169,11 @@ const Volunteer = () => {
           actions.map((a) => {
             const registered = isRegistered(a.id);
             return (
-              <div key={a.id} className="bg-card rounded-xl p-4 border border-border space-y-3">
+              <div key={a.id} className="bg-card rounded-xl border border-border overflow-hidden space-y-3">
+                {a.image_url && (
+                  <img src={a.image_url} alt={a.title} className="w-full h-40 object-cover" />
+                )}
+                <div className={a.image_url ? "px-4 space-y-3" : "p-4 space-y-3"}>
                 <div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{a.title}</h3>
                   {a.description && <p className="text-sm text-muted-foreground mt-1">{a.description}</p>}
