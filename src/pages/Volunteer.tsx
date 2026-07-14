@@ -173,7 +173,7 @@ const Volunteer = () => {
                 {a.image_url && (
                   <img src={a.image_url} alt={a.title} className="w-full h-40 object-cover" />
                 )}
-                <div className={a.image_url ? "px-4 space-y-3" : "p-4 space-y-3"}>
+                <div className={a.image_url ? "px-4 pb-4 space-y-3" : "p-4 space-y-3"}>
                 <div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{a.title}</h3>
                   {a.description && <p className="text-sm text-muted-foreground mt-1">{a.description}</p>}
