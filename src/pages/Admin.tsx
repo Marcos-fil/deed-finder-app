@@ -205,6 +205,25 @@ const Admin = () => {
     }
   };
 
+  const handleUpdateSubscriptionStatus = async (id: string, status: "pago" | "atrasado") => {
+    const { error } = await supabase.from("subscription_registrations" as any).update({ payment_status: status } as any).eq("id", id);
+    if (error) toast({ title: "Erro ao atualizar status", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: status === "pago" ? "Marcado como pago" : "Marcado como atrasado" });
+      loadData();
+    }
+  };
+
+  const handleDeleteSubscription = async (id: string) => {
+    if (!confirm("Remover esta assinatura? Esta ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("subscription_registrations" as any).delete().eq("id", id);
+    if (error) toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Assinatura removida" });
+      loadData();
+    }
+  };
+
   const handleSavePixStats = async () => {
     const goal = Number(pixStatsForm.month_goal);
     const amount = Number(pixStatsForm.current_amount);
