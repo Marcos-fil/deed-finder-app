@@ -205,6 +205,25 @@ const Admin = () => {
     }
   };
 
+  const handleUpdateSubscriptionStatus = async (id: string, status: "pago" | "atrasado") => {
+    const { error } = await supabase.from("subscription_registrations" as any).update({ payment_status: status } as any).eq("id", id);
+    if (error) toast({ title: "Erro ao atualizar status", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: status === "pago" ? "Marcado como pago" : "Marcado como atrasado" });
+      loadData();
+    }
+  };
+
+  const handleDeleteSubscription = async (id: string) => {
+    if (!confirm("Remover esta assinatura? Esta ação não pode ser desfeita.")) return;
+    const { error } = await supabase.from("subscription_registrations" as any).delete().eq("id", id);
+    if (error) toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
+    else {
+      toast({ title: "Assinatura removida" });
+      loadData();
+    }
+  };
+
   const handleSavePixStats = async () => {
     const goal = Number(pixStatsForm.month_goal);
     const amount = Number(pixStatsForm.current_amount);
@@ -456,7 +475,33 @@ const Admin = () => {
                               {s.age} anos • Nasc. {new Date(s.birth_date).toLocaleDateString("pt-BR")}
                             </p>
                           </div>
-                          {s.is_minor && <Badge variant="secondary" className="text-[10px]">Menor</Badge>}
+                          <div className="flex items-center gap-1.5">
+                            {s.is_minor && <Badge variant="secondary" className="text-[10px]">Menor</Badge>}
+                            <Badge variant={s.payment_status === "atrasado" ? "destructive" : "default"} className="text-[10px]">
+                              {s.payment_status === "atrasado" ? "Atrasado" : "Pago"}
+                            </Badge>
+                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleDeleteSubscription(s.id)}>
+                              <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant={s.payment_status === "pago" ? "default" : "outline"}
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => handleUpdateSubscriptionStatus(s.id, "pago")}
+                          >
+                            Marcar Pago
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={s.payment_status === "atrasado" ? "destructive" : "outline"}
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => handleUpdateSubscriptionStatus(s.id, "atrasado")}
+                          >
+                            Marcar Atrasado
+                          </Button>
                         </div>
                         <div className="text-xs text-muted-foreground space-y-0.5">
                           <p>📞 {s.phone}</p>

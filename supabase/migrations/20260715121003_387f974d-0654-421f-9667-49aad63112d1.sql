@@ -1,0 +1,1 @@
+ALTER TABLE public.subscription_registrations ADD COLUMN IF NOT EXISTS payment_status text NOT NULL DEFAULT 'pago' CHECK (payment_status IN ('pago', 'atrasado'));

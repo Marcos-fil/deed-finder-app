@@ -361,6 +361,7 @@ export type Database = {
           id: string
           is_minor: boolean
           monthly_amount: number | null
+          payment_status: string
           phone: string
           start_date: string
           subscriber_name: string
@@ -379,6 +380,7 @@ export type Database = {
           id?: string
           is_minor?: boolean
           monthly_amount?: number | null
+          payment_status?: string
           phone: string
           start_date?: string
           subscriber_name: string
@@ -397,6 +399,7 @@ export type Database = {
           id?: string
           is_minor?: boolean
           monthly_amount?: number | null
+          payment_status?: string
           phone?: string
           start_date?: string
           subscriber_name?: string
