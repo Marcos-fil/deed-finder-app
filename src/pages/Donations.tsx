@@ -70,11 +70,12 @@ const Donations = () => {
 
   useEffect(() => {
     const loadPixStats = async () => {
-      const { data } = await supabase.from("pix_stats" as any).select("*").limit(1).maybeSingle();
-      if (data) setPixStats(data as any);
+      const { data } = await supabase.functions.invoke("public-donation-data");
+      if (data?.pix_stats) setPixStats(data.pix_stats);
     };
     loadPixStats();
   }, []);
+
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;

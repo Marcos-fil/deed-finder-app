@@ -23,26 +23,25 @@ const SponsorshipSection = () => {
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
-    const { data: kids } = await supabase
-      .from("sponsorship_children" as any)
-      .select("id,name,cause,description,amount,payment_link")
-      .order("created_at", { ascending: true });
-    const list = (kids as any as Child[]) || [];
+    const { data: publicData } = await supabase.functions.invoke("public-donation-data");
+    const list = (publicData?.children as Child[]) || [];
     setChildren(list);
+    setCounts(publicData?.sponsor_counts || {});
 
-    const { data: allSponsors } = await supabase
-      .from("sponsorship_sponsors" as any)
-      .select("child_id,user_id");
-    const c: Record<string, number> = {};
-    const mine = new Set<string>();
-    (allSponsors as any[] || []).forEach((s) => {
-      c[s.child_id] = (c[s.child_id] || 0) + 1;
-      if (user && s.user_id === user.id) mine.add(s.child_id);
-    });
-    setCounts(c);
-    setMySponsorships(mine);
+    if (user) {
+      const { data: mySponsors } = await supabase
+        .from("sponsorship_sponsors" as any)
+        .select("child_id")
+        .eq("user_id", user.id);
+      const mine = new Set<string>();
+      (mySponsors as any[] || []).forEach((s) => mine.add(s.child_id));
+      setMySponsorships(mine);
+    } else {
+      setMySponsorships(new Set());
+    }
     setLoading(false);
   };
+
 
   useEffect(() => {
     load();
