@@ -3,7 +3,6 @@ import DonationCard from "@/components/DonationCard";
 import SponsorshipSection from "@/components/SponsorshipSection";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import pixQrCode from "@/assets/pix-qrcode.jpeg.asset.json";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,6 +46,7 @@ const Donations = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { get } = useSiteContent();
+  const pixQrImage = get("pix_qrcode", "image");
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState("");
   const [showPix, setShowPix] = useState(false);
@@ -469,7 +469,7 @@ const Donations = () => {
                   <p className="text-sm text-muted-foreground">{selectedSubscriptionMonth.name} • vence em {getSubscriptionDueDate(selectedMonth).toLocaleDateString("pt-BR")}</p>
                 </div>
                 <div className="bg-white p-4 rounded-xl">
-                  <img src={pixQrCode.url} alt="QR Code PIX" width={180} height={180} />
+                  <img src={pixQrImage} alt="QR Code PIX" width={180} height={180} />
                 </div>
                 <Button variant="outline" className="w-full" onClick={handleCopySubscriptionPix}>
                   <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
@@ -580,7 +580,7 @@ const Donations = () => {
             {/* QR Code */}
             <div className="bg-card rounded-2xl p-6 border border-border flex flex-col items-center gap-4">
               <div className="bg-white p-4 rounded-xl">
-                <img src={pixQrCode.url} alt="QR Code PIX" width={200} height={200} />
+                <img src={pixQrImage} alt="QR Code PIX" width={200} height={200} />
               </div>
               <p className="text-xs text-muted-foreground text-center">
                 Escaneie o QR Code com o app do seu banco
