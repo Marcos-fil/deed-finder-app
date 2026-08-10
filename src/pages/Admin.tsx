@@ -551,9 +551,11 @@ const Admin = () => {
                       <DialogHeader><DialogTitle>Criar Nova Aula</DialogTitle></DialogHeader>
                       <div className="space-y-4 mt-2">
                         <div><Label>Categoria</Label><Select value={classForm.category} onValueChange={(v) => setClassForm({ ...classForm, category: v })}><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value="Futebol">Futebol</SelectItem><SelectItem value="Jiu-jítsu">Jiu-jítsu</SelectItem><SelectItem value="Informática">Informática</SelectItem><SelectItem value="Palestras">Palestras</SelectItem></SelectContent></Select></div>
+                        <div><Label>Nome da aula</Label><Input placeholder="Ex: Futebol Infantil - Turma A" value={classForm.title} onChange={(e) => setClassForm({ ...classForm, title: e.target.value })} maxLength={120} /></div>
+                        <div><Label>Endereço</Label><Input placeholder="Rua, número, bairro, cidade" value={classForm.address} onChange={(e) => setClassForm({ ...classForm, address: e.target.value })} maxLength={200} /></div>
                         <div><Label>Dia da Semana</Label><Select value={classForm.day_of_week} onValueChange={(v) => setClassForm({ ...classForm, day_of_week: v })}><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{Object.entries(DAY_LABELS).slice(0, 7).map(([val, label]) => <SelectItem key={val} value={val}>{label}</SelectItem>)}</SelectContent></Select></div>
                         <div><Label>Horário</Label><Input placeholder="Ex: 14:00 - 16:00" value={classForm.time_slot} onChange={(e) => setClassForm({ ...classForm, time_slot: e.target.value })} /></div>
-                        <div><Label>Capacidade Máxima</Label><Input type="number" value={classForm.max_capacity} onChange={(e) => setClassForm({ ...classForm, max_capacity: e.target.value })} /></div>
+                        <div><Label>Quantidade máxima de alunos</Label><Input type="number" min="1" value={classForm.max_capacity} onChange={(e) => setClassForm({ ...classForm, max_capacity: e.target.value })} /></div>
                         <Button onClick={handleCreateClass} className="w-full">Criar Aula</Button>
                       </div>
                     </DialogContent>
