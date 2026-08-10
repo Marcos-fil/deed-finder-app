@@ -127,6 +127,7 @@ export const contentDefaults: Record<string, Record<string, string>> = {
   },
   pix_qrcode: {
     image: pixQrCodeAsset.url,
+    pix_key: "",
   },
   help_contact: {
     phone: "(11) 94128-9195",
