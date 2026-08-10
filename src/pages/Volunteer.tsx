@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, MapPin, Users, Copy, Check, QrCode, CheckCircle2, X } from "lucide-react";
-import pixQrCode from "@/assets/pix-qrcode.jpeg.asset.json";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -31,6 +31,8 @@ const Volunteer = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { get } = useSiteContent();
+  const pixQrImage = get("pix_qrcode", "image");
 
   const [actions, setActions] = useState<Action[]>([]);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
@@ -256,7 +258,7 @@ const Volunteer = () => {
               </div>
               <div className="bg-card rounded-xl p-4 border border-border flex flex-col items-center gap-3">
                 <div className="bg-white p-3 rounded-lg">
-                  <img src={pixQrCode.url} alt="QR Code PIX" width={180} height={180} />
+                  <img src={pixQrImage} alt="QR Code PIX" width={180} height={180} />
                 </div>
                 <p className="text-xs text-muted-foreground text-center">Escaneie o QR Code no app do seu banco</p>
                 <p className="text-xs text-center">
