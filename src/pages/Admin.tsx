@@ -54,7 +54,7 @@ const Admin = () => {
 
   const [showClassForm, setShowClassForm] = useState(false);
   const [showLinkForm, setShowLinkForm] = useState(false);
-  const [classForm, setClassForm] = useState({ category: "", day_of_week: "", time_slot: "", max_capacity: "30" });
+  const [classForm, setClassForm] = useState({ category: "", title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
   const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
   const [attendanceDates, setAttendanceDates] = useState<Record<string, string>>({});
