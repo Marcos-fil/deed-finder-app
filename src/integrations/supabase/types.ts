@@ -75,28 +75,34 @@ export type Database = {
       }
       classes: {
         Row: {
+          address: string | null
           category: string
           created_at: string
           day_of_week: string
           id: string
           max_capacity: number | null
           time_slot: string
+          title: string | null
         }
         Insert: {
+          address?: string | null
           category: string
           created_at?: string
           day_of_week: string
           id?: string
           max_capacity?: number | null
           time_slot: string
+          title?: string | null
         }
         Update: {
+          address?: string | null
           category?: string
           created_at?: string
           day_of_week?: string
           id?: string
           max_capacity?: number | null
           time_slot?: string
+          title?: string | null
         }
         Relationships: []
       }
