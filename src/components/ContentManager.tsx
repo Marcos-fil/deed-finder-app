@@ -15,7 +15,23 @@ const ContentManager = () => {
   const [activeSection, setActiveSection] = useState(contentSections[0].key);
   const [values, setValues] = useState<Record<string, Record<string, string>>>(contentDefaults);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleUpload = async (fieldKey: string, file: File) => {
+    setUploading(fieldKey);
+    const ext = file.name.split(".").pop();
+    const path = `content/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("news-images").upload(path, file);
+    if (error) {
+      toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
+    } else {
+      const { data } = supabase.storage.from("news-images").getPublicUrl(path);
+      updateField(fieldKey, data.publicUrl);
+      toast({ title: "Imagem enviada!", description: "Clique em salvar para aplicar." });
+    }
+    setUploading(null);
+  };
 
   useEffect(() => {
     const load = async () => {
