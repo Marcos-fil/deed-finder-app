@@ -287,7 +287,7 @@ const Classes = () => {
                           <Icon className={`h-5 w-5 ${config.color}`} />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-foreground text-sm">{cls.category}</h4>
+                          <h4 className="font-semibold text-foreground text-sm">{cls.title || cls.category}</h4>
                           <p className="text-xs text-muted-foreground">{cls.day_of_week} • {cls.time_slot}</p>
                         </div>
                       </div>
