@@ -73,9 +73,10 @@ export const contentSections: ContentSection[] = [
   {
     key: "pix_qrcode",
     label: "PIX — QR Code",
-    description: "Imagem usada em TODOS os QR Codes de doação (doações, assinatura, voluntários e ações).",
+    description: "Imagem e chave usadas em TODOS os PIX de doação (doações, assinatura, voluntários e ações).",
     fields: [
       { key: "image", label: "Imagem do QR Code PIX", type: "image" },
+      { key: "pix_key", label: "PIX copia e cola (chave ou código)", type: "textarea", placeholder: "Chave PIX ou código copia e cola" },
     ],
   },
   {
@@ -126,6 +127,7 @@ export const contentDefaults: Record<string, Record<string, string>> = {
   },
   pix_qrcode: {
     image: pixQrCodeAsset.url,
+    pix_key: "",
   },
   help_contact: {
     phone: "(11) 94128-9195",

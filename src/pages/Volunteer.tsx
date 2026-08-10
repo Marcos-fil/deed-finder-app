@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, MapPin, Users, Copy, Check, QrCode, CheckCircle2, X } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { supabase } from "@/integrations/supabase/client";
+import PixCopyKey from "@/components/PixCopyKey";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -261,6 +262,7 @@ const Volunteer = () => {
                   <img src={pixQrImage} alt="QR Code PIX" width={180} height={180} />
                 </div>
                 <p className="text-xs text-muted-foreground text-center">Escaneie o QR Code no app do seu banco</p>
+                <PixCopyKey />
                 <p className="text-xs text-center">
                   <span className="text-muted-foreground">Chave PIX: </span>
                   <span className="font-medium break-all">{openAction.pix_key}</span>

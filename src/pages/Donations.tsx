@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PixCopyKey from "@/components/PixCopyKey";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { toEmbedUrl } from "@/lib/siteContent";
@@ -471,6 +472,7 @@ const Donations = () => {
                 <div className="bg-white p-4 rounded-xl">
                   <img src={pixQrImage} alt="QR Code PIX" width={180} height={180} />
                 </div>
+                <PixCopyKey />
                 <Button variant="outline" className="w-full" onClick={handleCopySubscriptionPix}>
                   <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
                 </Button>
@@ -585,6 +587,7 @@ const Donations = () => {
               <p className="text-xs text-muted-foreground text-center">
                 Escaneie o QR Code com o app do seu banco
               </p>
+              <PixCopyKey />
             </div>
 
             {/* Copy button */}

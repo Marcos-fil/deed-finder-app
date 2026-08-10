@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import PixCopyKey from "@/components/PixCopyKey";
 import { useToast } from "@/hooks/use-toast";
 import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 import heroBanner from "@/assets/hero-banner.png";
@@ -179,6 +180,7 @@ const Participate = () => {
                   <p className="text-xs text-muted-foreground text-center">
                     Escaneie o QR Code com o app do seu banco
                   </p>
+                  <PixCopyKey />
                 </div>
 
                 <Button variant="outline" className="w-full h-12" onClick={handleCopyPix}>
