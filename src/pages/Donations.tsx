@@ -471,6 +471,8 @@ const Donations = () => {
                 <div className="bg-white p-4 rounded-xl">
                   <img src={pixQrImage} alt="QR Code PIX" width={180} height={180} />
                 </div>
+                <PixCopyKey />
+                </div>
                 <Button variant="outline" className="w-full" onClick={handleCopySubscriptionPix}>
                   <Copy className="h-4 w-4 mr-2" /> Copiar PIX e marcar como pago
                 </Button>
