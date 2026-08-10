@@ -567,7 +567,7 @@ const Admin = () => {
                   return (
                     <div key={c.id} className="bg-card rounded-xl p-4 border border-border">
                       <div className="flex items-center justify-between mb-2">
-                        <div><h4 className="font-semibold text-foreground text-sm">{CATEGORY_LABELS[c.category] || c.category}</h4><p className="text-xs text-muted-foreground">{DAY_LABELS[c.day_of_week] || c.day_of_week} • {c.time_slot}</p></div>
+                        <div><h4 className="font-semibold text-foreground text-sm">{c.title || CATEGORY_LABELS[c.category] || c.category}</h4><p className="text-xs text-muted-foreground">{CATEGORY_LABELS[c.category] || c.category} • {DAY_LABELS[c.day_of_week] || c.day_of_week} • {c.time_slot}</p>{c.address && <p className="text-xs text-muted-foreground mt-0.5">📍 {c.address}</p>}</div>
                         <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteClass(c.id)}><Trash2 className="h-4 w-4" /></Button>
                       </div>
                       <div className="flex items-center justify-between"><div className="flex items-center gap-2"><Users className="h-3.5 w-3.5 text-muted-foreground" /><span className="text-xs text-muted-foreground">{enrolled}/{c.max_capacity || "∞"} alunos</span></div><div className="h-1.5 flex-1 mx-3 bg-muted rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{ width: `${Math.min((enrolled / (c.max_capacity || 30)) * 100, 100)}%` }} /></div></div>
