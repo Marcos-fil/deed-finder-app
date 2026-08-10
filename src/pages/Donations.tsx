@@ -585,6 +585,7 @@ const Donations = () => {
               <p className="text-xs text-muted-foreground text-center">
                 Escaneie o QR Code com o app do seu banco
               </p>
+              <PixCopyKey />
             </div>
 
             {/* Copy button */}
