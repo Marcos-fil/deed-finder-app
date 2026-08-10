@@ -341,11 +341,18 @@ const Classes = () => {
                         <Calendar className={`h-5 w-5 ${config.color}`} />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-foreground text-sm">{cls.day_of_week}</h4>
+                        <h4 className="font-semibold text-foreground text-sm">{cls.title || cls.day_of_week}</h4>
+                        {cls.title && <p className="text-xs text-muted-foreground">{cls.day_of_week}</p>}
                         <div className="flex items-center gap-1.5 mt-0.5">
                           <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                           <span className="text-xs text-muted-foreground">{cls.time_slot}</span>
                         </div>
+                        {cls.address && (
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">{cls.address}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
