@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import PixCopyKey from "@/components/PixCopyKey";
 import { useToast } from "@/hooks/use-toast";
 import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 import heroBanner from "@/assets/hero-banner.png";
