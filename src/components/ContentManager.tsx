@@ -112,8 +112,22 @@ const ContentManager = () => {
                 />
               )}
 
-              {field.type === "image" && val && (
-                <img src={val} alt="Preview" className="mt-2 max-h-32 rounded-lg border border-border object-cover" />
+              {field.type === "image" && (
+                <div className="space-y-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploading === field.key}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleUpload(field.key, f);
+                    }}
+                  />
+                  {uploading === field.key && <p className="text-xs text-muted-foreground">Enviando imagem...</p>}
+                  {val && (
+                    <img src={val} alt="Preview" className="max-h-40 rounded-lg border border-border object-contain bg-white p-2" />
+                  )}
+                </div>
               )}
               {field.type === "video" && val && (
                 <div className="mt-2 relative w-full max-w-sm" style={{ paddingBottom: "32%" }}>
