@@ -130,6 +130,8 @@ const Admin = () => {
     }
     const { error } = await supabase.from("classes" as any).insert({
       category: classForm.category,
+      title: classForm.title.trim() || null,
+      address: classForm.address.trim() || null,
       day_of_week: classForm.day_of_week,
       time_slot: classForm.time_slot,
       max_capacity: parseInt(classForm.max_capacity) || 30,
@@ -140,7 +142,7 @@ const Admin = () => {
     } else {
       toast({ title: "Aula criada com sucesso!" });
       setShowClassForm(false);
-      setClassForm({ category: "", day_of_week: "", time_slot: "", max_capacity: "30" });
+      setClassForm({ category: "", title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
       loadData();
     }
   };
