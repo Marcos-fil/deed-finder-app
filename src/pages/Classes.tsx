@@ -312,7 +312,7 @@ const Classes = () => {
                       )}
                       <div className="flex items-center gap-1.5 text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" />
-                        <span className="text-xs">{loc.name}</span>
+                        <span className="text-xs">{cls.address || loc.name}</span>
                       </div>
                     </div>
                   </div>
