@@ -14,8 +14,9 @@ import ContentManager from "@/components/ContentManager";
 import SponsorshipAdmin from "@/components/SponsorshipAdmin";
 import NewsAdmin from "@/components/NewsAdmin";
 import VolunteerAdmin from "@/components/VolunteerAdmin";
+import EventsAdmin from "@/components/EventsAdmin";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "eventos" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "seguranca";
 
 const CATEGORY_LABELS: Record<string, string> = {
   futebol: "⚽ Futebol",
@@ -54,7 +55,7 @@ const Admin = () => {
 
   const [showClassForm, setShowClassForm] = useState(false);
   const [showLinkForm, setShowLinkForm] = useState(false);
-  const [classForm, setClassForm] = useState({ category: "", title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
+  const [classForm, setClassForm] = useState({ title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
   const [linkForm, setLinkForm] = useState({ parent_user_id: "", child_user_id: "", relationship: "responsável" });
   const [subscriptionAmounts, setSubscriptionAmounts] = useState<Record<string, string>>({});
   const [attendanceDates, setAttendanceDates] = useState<Record<string, string>>({});
@@ -124,13 +125,12 @@ const Admin = () => {
   };
 
   const handleCreateClass = async () => {
-    if (!classForm.category || !classForm.day_of_week || !classForm.time_slot) {
-      toast({ title: "Preencha todos os campos", variant: "destructive" });
+    if (!classForm.title.trim() || !classForm.day_of_week || !classForm.time_slot) {
+      toast({ title: "Preencha nome, dia e horário", variant: "destructive" });
       return;
     }
     const { error } = await supabase.from("classes" as any).insert({
-      category: classForm.category,
-      title: classForm.title.trim() || null,
+      title: classForm.title.trim(),
       address: classForm.address.trim() || null,
       day_of_week: classForm.day_of_week,
       time_slot: classForm.time_slot,
@@ -142,10 +142,11 @@ const Admin = () => {
     } else {
       toast({ title: "Aula criada com sucesso!" });
       setShowClassForm(false);
-      setClassForm({ category: "", title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
+      setClassForm({ title: "", address: "", day_of_week: "", time_slot: "", max_capacity: "30" });
       loadData();
     }
   };
+
 
   const handleDeleteClass = async (id: string) => {
     const { error } = await supabase.from("classes" as any).delete().eq("id", id);
