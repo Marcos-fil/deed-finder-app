@@ -569,6 +569,10 @@ const Admin = () => {
               </div>
             )}
 
+            {activeTab === "eventos" && <EventsAdmin />}
+
+
+
             {activeTab === "presencas" && (
               <div className="space-y-4">
                 <div className="bg-card rounded-xl p-4 border border-border">
