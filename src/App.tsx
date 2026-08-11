@@ -23,6 +23,8 @@ import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import ParentDashboard from "./pages/ParentDashboard";
 import Volunteer from "./pages/Volunteer";
+import Events from "./pages/Events";
+
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,8 @@ const AppRoutes = () => {
         <Route path="/acao/:slug" element={<ProtectedRoute><ActionDetail /></ProtectedRoute>} />
         <Route path="/acao/:slug/participar" element={<ProtectedRoute><Participate /></ProtectedRoute>} />
         <Route path="/aulas" element={<ProtectedRoute><Classes /></ProtectedRoute>} />
+        <Route path="/eventos" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+
         <Route path="/doacoes" element={<ProtectedRoute><Donations /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Map /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
