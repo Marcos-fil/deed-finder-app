@@ -571,7 +571,7 @@ const Admin = () => {
                       </div>
                     ))}
                   </div>
-                ) : <div className="text-center py-8 text-muted-foreground text-sm">Nenhum cadastro de assinatura ainda</div>}
+                ) : <div className="text-center py-8 text-muted-foreground text-sm">Nenhum Guardião cadastrado ainda</div>}
               </div>
             )}
 
