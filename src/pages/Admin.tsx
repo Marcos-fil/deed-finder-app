@@ -694,6 +694,8 @@ const Admin = () => {
 
             {activeTab === "locais" && <CollectionPointsAdmin />}
 
+            {activeTab === "backup" && <BackupExport />}
+
             {activeTab === "seguranca" && (
               <div className="space-y-4">
                 <div className="bg-card rounded-xl p-4 border border-border"><h3 className="font-semibold text-foreground text-sm mb-1">Usuários Cadastrados</h3><p className="text-3xl font-bold text-primary">{users.length}</p></div>
