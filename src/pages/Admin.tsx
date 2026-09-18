@@ -17,6 +17,7 @@ import VolunteerAdmin from "@/components/VolunteerAdmin";
 import EventsAdmin from "@/components/EventsAdmin";
 import CollectionPointsAdmin from "@/components/CollectionPointsAdmin";
 import { Switch } from "@/components/ui/switch";
+import BackupExport from "@/components/BackupExport";
 
 type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "eventos" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "locais" | "seguranca";
 
