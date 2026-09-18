@@ -17,8 +17,9 @@ import VolunteerAdmin from "@/components/VolunteerAdmin";
 import EventsAdmin from "@/components/EventsAdmin";
 import CollectionPointsAdmin from "@/components/CollectionPointsAdmin";
 import { Switch } from "@/components/ui/switch";
+import BackupExport from "@/components/BackupExport";
 
-type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "eventos" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "locais" | "seguranca";
+type AdminTab = "alunos" | "doacoes" | "assinaturas" | "aulas" | "eventos" | "presencas" | "responsaveis" | "conteudo" | "noticias" | "apadrinhar" | "voluntarios" | "locais" | "backup" | "seguranca";
 
 const DAY_LABELS: Record<string, string> = {
 
@@ -298,6 +299,7 @@ const Admin = () => {
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
     { id: "voluntarios" as AdminTab, label: "Voluntários", icon: HandHeart, count: 0 },
     { id: "locais" as AdminTab, label: "Locais", icon: MapPin, count: 0 },
+    { id: "backup" as AdminTab, label: "Backup", icon: FileText, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
 
@@ -691,6 +693,8 @@ const Admin = () => {
             {activeTab === "voluntarios" && <VolunteerAdmin />}
 
             {activeTab === "locais" && <CollectionPointsAdmin />}
+
+            {activeTab === "backup" && <BackupExport />}
 
             {activeTab === "seguranca" && (
               <div className="space-y-4">
