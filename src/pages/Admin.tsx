@@ -299,6 +299,7 @@ const Admin = () => {
     { id: "apadrinhar" as AdminTab, label: "Apadrinhar", icon: Sparkles, count: 0 },
     { id: "voluntarios" as AdminTab, label: "Voluntários", icon: HandHeart, count: 0 },
     { id: "locais" as AdminTab, label: "Locais", icon: MapPin, count: 0 },
+    { id: "backup" as AdminTab, label: "Backup", icon: FileText, count: 0 },
     { id: "seguranca" as AdminTab, label: "Segurança", icon: Shield, count: users.length },
   ];
 
