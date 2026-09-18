@@ -181,8 +181,8 @@ const Donations = () => {
       toast({ title: "Informe o endereço", description: "Preencha seu endereço completo." });
       return;
     }
-    if (subscriptionValue <= 0) {
-      toast({ title: "Informe o valor mensal", description: "Digite o valor inicial do programa Guardiões." });
+    if (subscriptionValue < 10) {
+      toast({ title: "Valor mínimo de R$ 10", description: "A contribuição do programa Guardiões deve ser de R$ 10 ou mais.", variant: "destructive" });
       return;
     }
     if (isMinor) {
@@ -227,8 +227,8 @@ const Donations = () => {
   };
 
   const handleOpenSubscriptionMonth = (monthIndex: number) => {
-    if (subscriptionValue <= 0) {
-      toast({ title: "Informe um valor", description: "Digite o valor mensal do programa Guardiões." });
+    if (subscriptionValue < 10) {
+      toast({ title: "Valor mínimo de R$ 10", description: "A contribuição do programa Guardiões deve ser de R$ 10 ou mais.", variant: "destructive" });
       return;
     }
     setSelectedMonth(monthIndex);
@@ -406,14 +406,14 @@ const Donations = () => {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Valor mensal inicial</label>
+                    <label className="text-sm font-medium text-foreground mb-1.5 block">Valor mensal inicial (mínimo R$ 10)</label>
                     <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-primary/30">
                       <span className="text-muted-foreground font-medium">R$</span>
                       <input
                         type="number"
-                        min="1"
+                        min="10"
                         step="0.01"
-                        placeholder="0,00"
+                        placeholder="10,00"
                         value={subscriptionAmount}
                         onChange={(e) => setSubscriptionAmount(e.target.value)}
                         className="flex-1 bg-transparent text-foreground font-semibold placeholder:text-muted-foreground/50 border-0 outline-none"
