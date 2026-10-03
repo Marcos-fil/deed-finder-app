@@ -21,6 +21,7 @@ const SponsorshipSection = () => {
   const { toast } = useToast();
   const { get } = useSiteContent();
   const pixQrImage = get("pix_qrcode", "image");
+  const pixIsPrimary = get("pix_qrcode", "sponsorship_primary") === "true";
   const [children, setChildren] = useState<Child[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [mySponsorships, setMySponsorships] = useState<Set<string>>(new Set());
@@ -122,11 +123,34 @@ const SponsorshipSection = () => {
                 <span className="text-foreground">Você apadrinhou esta criança ❤️</span>
               </div>
             )}
-            <Button className="w-full mt-3 gradient-primary text-primary-foreground" onClick={() => handleSponsor(child)}>
-              {sponsoredByMe ? "Doar novamente" : "Apadrinhar e doar"} <ExternalLink className="h-4 w-4 ml-2" />
+            {pixIsPrimary && pixQrImage && (
+              <div className="mt-3 bg-primary/5 rounded-lg p-4 border border-primary/30">
+                <p className="text-xs font-semibold text-foreground mb-2 text-center">
+                  Aponte a câmera para o QR Code e doe via PIX
+                </p>
+                <img
+                  src={pixQrImage}
+                  alt="QR Code PIX"
+                  className="w-48 h-48 object-contain mx-auto rounded-md bg-background"
+                />
+                <PixCopyKey className="mt-2" />
+              </div>
+            )}
+
+            <Button
+              className={`w-full mt-3 ${pixIsPrimary && pixQrImage ? "" : "gradient-primary text-primary-foreground"}`}
+              variant={pixIsPrimary && pixQrImage ? "outline" : "default"}
+              onClick={() => handleSponsor(child)}
+            >
+              {pixIsPrimary && pixQrImage
+                ? "Ou pagar pelo link"
+                : sponsoredByMe
+                  ? "Doar novamente"
+                  : "Apadrinhar e doar"}{" "}
+              <ExternalLink className="h-4 w-4 ml-2" />
             </Button>
 
-            {pixQrImage && (
+            {!pixIsPrimary && pixQrImage && (
               <div className="mt-3 bg-muted/50 rounded-lg p-3 border border-border">
                 <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-2 text-center">
                   Ou doe direto no PIX
