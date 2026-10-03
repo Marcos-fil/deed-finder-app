@@ -4,6 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Heart, ExternalLink, CheckCircle2, Sparkles, Users } from "lucide-react";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import PixCopyKey from "@/components/PixCopyKey";
 
 interface Child {
   id: string;
@@ -17,6 +19,8 @@ interface Child {
 const SponsorshipSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { get } = useSiteContent();
+  const pixQrImage = get("pix_qrcode", "image");
   const [children, setChildren] = useState<Child[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [mySponsorships, setMySponsorships] = useState<Set<string>>(new Set());
