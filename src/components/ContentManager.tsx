@@ -112,7 +112,17 @@ const ContentManager = () => {
                 {field.type === "video" && <Film className="h-3.5 w-3.5" />}
                 {field.label}
               </Label>
-              {field.type === "textarea" ? (
+              {field.type === "checkbox" ? (
+                <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={val === "true"}
+                    onChange={(e) => updateField(field.key, e.target.checked ? "true" : "false")}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  {val === "true" ? "Ativado" : "Desativado"}
+                </label>
+              ) : field.type === "textarea" ? (
                 <Textarea
                   value={val}
                   onChange={(e) => updateField(field.key, e.target.value)}

@@ -4,7 +4,7 @@ import campanhaAgasalho from "@/assets/campanha-agasalho.jpeg";
 import pixQrCodeAsset from "@/assets/pix-qrcode.jpeg.asset.json";
 
 export type ContentField =
-  | { key: string; label: string; type: "text" | "textarea" | "image" | "video" | "url"; placeholder?: string };
+  | { key: string; label: string; type: "text" | "textarea" | "image" | "video" | "url" | "checkbox"; placeholder?: string };
 
 export type ContentSection = {
   key: string;
@@ -77,6 +77,7 @@ export const contentSections: ContentSection[] = [
     fields: [
       { key: "image", label: "Imagem do QR Code PIX", type: "image" },
       { key: "pix_key", label: "PIX copia e cola (chave ou código)", type: "textarea", placeholder: "Chave PIX ou código copia e cola" },
+      { key: "sponsorship_primary", label: "Usar QR Code PIX como pagamento principal no apadrinhamento", type: "checkbox" },
     ],
   },
   {
@@ -128,6 +129,7 @@ export const contentDefaults: Record<string, Record<string, string>> = {
   pix_qrcode: {
     image: pixQrCodeAsset.url,
     pix_key: "",
+    sponsorship_primary: "false",
   },
   help_contact: {
     phone: "(11) 94128-9195",
