@@ -4,6 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Heart, ExternalLink, CheckCircle2, Sparkles, Users } from "lucide-react";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import PixCopyKey from "@/components/PixCopyKey";
 
 interface Child {
   id: string;
@@ -17,6 +19,8 @@ interface Child {
 const SponsorshipSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { get } = useSiteContent();
+  const pixQrImage = get("pix_qrcode", "image");
   const [children, setChildren] = useState<Child[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [mySponsorships, setMySponsorships] = useState<Set<string>>(new Set());
@@ -121,6 +125,20 @@ const SponsorshipSection = () => {
             <Button className="w-full mt-3 gradient-primary text-primary-foreground" onClick={() => handleSponsor(child)}>
               {sponsoredByMe ? "Doar novamente" : "Apadrinhar e doar"} <ExternalLink className="h-4 w-4 ml-2" />
             </Button>
+
+            {pixQrImage && (
+              <div className="mt-3 bg-muted/50 rounded-lg p-3 border border-border">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground mb-2 text-center">
+                  Ou doe direto no PIX
+                </p>
+                <img
+                  src={pixQrImage}
+                  alt="QR Code PIX"
+                  className="w-40 h-40 object-contain mx-auto rounded-md bg-background"
+                />
+                <PixCopyKey className="mt-2" />
+              </div>
+            )}
           </div>
         );
       })}
